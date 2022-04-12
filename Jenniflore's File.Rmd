@@ -1,0 +1,123 @@
+---
+title: "Final Project DCS 375"
+author: "Dieter Villegas"
+date: "4/6/2022"
+output: html_document
+---
+
+
+```{r load-libraries}
+library(dplyr)
+library(igraph)
+```
+
+
+```{r clean-data}
+
+# read in the RDS
+wc_rds <- readRDS("/Users/dietervillegas/Desktop/Network_Analysis/Final_project/passing-networks_Trial/data/WC_events_clean.RDS")
+
+# grab only the columns we're interested in for analysis
+wc_maxtrix <- cbind(wc_rds$period,wc_rds$timestamp, wc_rds$duration,wc_rds$possession_team.name,wc_rds$type.name,wc_rds$player.name,wc_rds$team.name,wc_rds$pass.length,wc_rds$pass.recipient.name,wc_rds$pass.outcome.name,wc_rds$ball_receipt.outcome.name,wc_rds$match_id,wc_rds$location.x,wc_rds$location.y,wc_rds$pass.end_location.x,wc_rds$pass.end_location.y)
+
+# turn into a dataframe
+wc_df_official <- as.data.frame(wc_maxtrix)
+
+# rename the columns for analysis
+colnames(wc_df_official) <- c("period","timestamp","duration","possession_team.name","type.name","player.name","team.name","pass.length","pass.recipient.name","pass.outcome.name","ball_receipt.outcome.name","match_id","location.x","location.y","pass.end_location.x","pass.end_location.y")
+
+# grab only the passes
+network_passes <- subset(wc_df_official, type.name == "Pass")
+
+# create 4 data sets for four games we plan to analyze
+france_croatia_final <- subset(network_passes, possession_team.name == c("France", "Croatia"))
+
+france_belgium_semi <- subset(network_passes, team.name == c("France", "Belgium"))
+
+france_uruguay_quarter <- subset(network_passes, team.name == c("France", "Uruguay"))
+
+france_argentina_round <- subset(network_passes, team.name == c("France", "Argentina"))
+
+# write 4 csv files for each of these games
+
+#write.csv(france_croatia_final, "france_croatia_final.csv", row.names = FALSE)
+
+#write.csv(france_belgium_semi, "france_belgium_semi.csv", row.names = FALSE)
+
+#write.csv(france_uruguay_quarter, "france_uruguay_quarter.csv", row.names = FALSE)
+
+#write.csv(france_argentina_round, "france_argentina_round.csv", row.names = FALSE)
+
+```
+
+```{r france-semis-object}
+
+# clean the data frame to only include passes from france and croatia final
+
+france_belgium_semis_both <- read.csv("france_belgium_semi.csv")
+
+#team_name_france_croatia_final <- subset(france_croatia_final, team.name == c("France", "Croatia"))
+
+
+
+# construct dataset for connected passes only 
+connected_pass_france_semis <- subset(france_belgium_semis, is.na(pass.outcome.name))
+
+# create an edgelist of passes to and from players
+france_semis_both <- cbind(connected_pass_france_semis$player.name, connected_pass_france_semis$pass.recipient.name)
+
+# name these columns
+colnames(france_semis_both) <- c("from", "to")
+
+# create a graph object for network analysis
+france_semis_both.g <- graph.edgelist(france_semis_both, directed = TRUE) # makes a graph object
+
+```
+
+```{r}
+# read in csv containing semifinal game France vs Belgium
+france_belgium_semis_both <- read.csv("france_belgium_semi.csv")
+
+# clean the data frame to only include passes from France vs Belgium
+
+team_name_france_belgium_semis <- subset(france_belgium_semis_both, team.name == c("France", "Belgium"))
+
+france_only_semis <- subset(team_name_france_belgium_semis , team.name == "France")
+
+belgium_only_semis <- subset(team_name_france_belgium_semis , team.name == "Belgium")
+
+# construct dataset for connected passes only 
+connected_pass_france_semis <- subset(france_only_semis, is.na(pass.outcome.name))
+connected_pass_belgium_semis <- subset(belgium_only_semis, is.na(pass.outcome.name))
+
+# create an edgelist of passes to and from players
+france_semis <- cbind(connected_pass_france_semis$player.name, connected_pass_france_semis$pass.recipient.name)
+
+belgium_semis <- cbind(connected_pass_belgium_semis$player.name, connected_pass_belgium_semis$pass.recipient.name)
+
+# name these columns
+colnames(france_semis) <- c("from", "to")
+colnames(belgium_semis) <- c("from", "to")
+
+# create a graph object for network analysis
+france_semis.g <- graph.edgelist(france_semis, directed = TRUE) # makes a graph object
+belgium_semis.g <- graph.edgelist(belgium_semis, directed = TRUE) # makes a graph object
+
+# creating images of each of the networks (france and belgium respectively) and adding them to our local folder
+png(file="france_semis.png", width=1000, height=1000)
+plot(france_semis.g, )
+dev.off()
+png(file="beligium_semis.png", width=1000, height=1000)
+plot(belgium_semis.g)
+dev.off()
+```
+
+```{r}
+png(file="france_semis.png", width=1000, height=1000)
+plot(france_semis.g, )
+dev.off()
+png(file="beligium_semis.png", width=1000, height=1000)
+plot(belgium_semis.g)
+dev.off()
+```
+
