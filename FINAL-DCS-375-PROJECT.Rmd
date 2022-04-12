@@ -1,6 +1,6 @@
 ---
 title: "Final Project DCS 375"
-author: "Dieter Villegas, Liza Dubinsky"
+author: "Dieter Villegas, Liza Dubinsky, Quinn Macauley"
 date: "4/6/2022"
 output: html_document
 ---
