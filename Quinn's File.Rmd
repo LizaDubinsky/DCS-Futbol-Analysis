@@ -1,6 +1,6 @@
 ---
 title: "Final Project DCS 375"
-author: "Dieter Villegas, Liza Dubinsky, Quinn Macauley "
+author: "Dieter Villegas, Liza Dubinsky, Quinn Macauley"
 date: "4/6/2022"
 output: html_document
 ---
@@ -9,13 +9,14 @@ output: html_document
 ```{r load-libraries}
 library(dplyr)
 library(igraph)
+library(bipartite)
 ```
 
 
 ```{r clean-data}
 
 # read in the RDS
-wc_rds <- readRDS("/Users/Liza/Desktop/dcs_final/WC_events_clean.RDS")
+wc_rds <- readRDS("WC_events_clean.RDS")
 
 # grab only the columns we're interested in for analysis
 wc_maxtrix <- cbind(wc_rds$period,wc_rds$timestamp, wc_rds$duration,wc_rds$possession_team.name,wc_rds$type.name,wc_rds$player.name,wc_rds$team.name,wc_rds$pass.length,wc_rds$pass.recipient.name,wc_rds$pass.outcome.name,wc_rds$ball_receipt.outcome.name,wc_rds$match_id,wc_rds$location.x,wc_rds$location.y,wc_rds$pass.end_location.x,wc_rds$pass.end_location.y)
@@ -50,8 +51,7 @@ write.csv(france_argentina_round, "france_argentina_round.csv", row.names = FALS
 
 ```
 
-```{r france-final-object}
-
+```{r}
 # clean the data frame to only include passes from france and croatia final
 team_name_france_croatia_final <- subset(france_croatia_final, team.name == c("France", "Croatia"))
 
@@ -71,14 +71,18 @@ croatia_final <- cbind(connected_pass_croatia_final$player.name, connected_pass_
 # name these columns
 colnames(france_final) <- c("from", "to")
 colnames(croatia_final) <- c("from", "to")
+```
+
+```{r france-final-object}
+
 
 # create a graph object for network analysis
-france_final.g <- graph.edgelist(france_final, directed = TRUE, weight) # makes a graph object
+france_final.g <- graph.edgelist(france_final.a, directed = TRUE) # makes a graph object
 croatia_final.g <- graph.edgelist(croatia_final, directed = TRUE) # makes a graph object
 
-png(file="france_final.png", width=1000, height=1000)
-plot(france_final.g, )
-png(file="croatia_final.png", width=1000, height=1000)
+png(file="france_final.png", width=4000, height=4000)
+plot(france_final.g, edge.width = E(france_final.g)$weight)
+png(file="croatia_final.png", width=4000, height=4000)
 plot(croatia_final.g)
 dev.off()
 ```
