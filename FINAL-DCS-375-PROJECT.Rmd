@@ -8,7 +8,7 @@ output: html_document
 
 ```{r load-libraries}
 library(dplyr)
-library(igraph)
+library(igraph) 
 ```
 
 
