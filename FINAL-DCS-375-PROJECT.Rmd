@@ -56,12 +56,17 @@ write.csv(france_argentina_round, "france_argentina_round.csv", row.names = FALS
 team_name_france_croatia_final <- subset(france_croatia_final, team.name == c("France", "Croatia"))
 
 france_only_final <- subset(team_name_france_croatia_final, team.name == "France")
+france_only_final1 <- subset(france_only_final, player.name  != "Steve Mandanda")
+france_only_final2 <- subset(france_only_final1, pass.recipient.name  != "Steve Mandanda")
 
 croatia_only_final <- subset(team_name_france_croatia_final, team.name == "Croatia")
+croatia_only_final1 <- subset(croatia_only_final, player.name  != "Lovre Kalinić")
+croatia_only_final2 <- subset(croatia_only_final1, pass.recipient.name  != "Lovre Kalinić")
+
 
 # construct dataset for connected passes only 
-connected_pass_france_final <- subset(france_only_final, is.na(pass.outcome.name))
-connected_pass_croatia_final <- subset(croatia_only_final, is.na(pass.outcome.name))
+connected_pass_france_final <- subset(france_only_final2, is.na(pass.outcome.name))
+connected_pass_croatia_final <- subset(croatia_only_final2, is.na(pass.outcome.name))
 
 # create an edgelist of passes to and from players
 france_final <- cbind(connected_pass_france_final$player.name, connected_pass_france_final$pass.recipient.name)
@@ -88,7 +93,7 @@ dev.off()
 france_midfielder <- c("Corentin Tolisso", "Paul Pogba", "N''Golo Kanté", "Blaise Matuidi", "Steven N''Kemboanza Mike Christopher Nzonzi", "Thomas Lemar", "Florian Thauvin")
 france_defender <- c("Benjamin Pavard", "Samuel Yves Umtiti", "Raphaël Varane", "Lucas Hernández Pi", "Presnel Kimpembe", "Djibril Sidibé", "Benjamin Mendy")
 france_forward <- c("Ousmane Dembélé", "Kylian Mbappé Lottin", "Antoine Griezmann", "Nabil Fekir", "Olivier Giroud")
-france_goalkeeper <- c("Hugo Lloris", "Steve Mandanda")
+france_goalkeeper <- c("Hugo Lloris")
 ```
 
 ```{r identify-croatia-players}
@@ -96,5 +101,23 @@ france_goalkeeper <- c("Hugo Lloris", "Steve Mandanda")
 croatia_midfielder <- c("Luka Modrić", "Ivan Perišić", "Mateo Kovačić", "Marcelo Brozović","Ivan Rakitić", "Milan Badelj", "Filip Bradarić")
 croatia_defender <- c("Domagoj Vida", "Dejan Lovren", "Šime Vrsaljko", "Duje Ćaleta-Car", "Ivan Strinić", "Josip Pivarić", "Tin Jedvaj", "Vedran Ćorluka")
 croatia_forward <- c("Ante Rebić", "Andrej Kramarić", "Marko Pjaca", "Mario Mandžukić")
-croatia_goalkeeper <- c("Lovre Kalinić", "Danijel Subašić")
+croatia_goalkeeper <- c("Danijel Subašić")
+```
+
+```{r}
+V(france_final.g)[V(france_final.g)$name %in% france_midfielder]$color <- "#440154"
+V(france_final.g)[V(france_final.g)$name %in% france_defender]$color <-"#31688e"
+V(france_final.g)[V(france_final.g)$name %in% france_forward]$color <- "#35b779"
+V(france_final.g)[V(france_final.g)$name %in% france_goalkeeper]$color <- "#fde725"
+
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_midfielder]$color <- "#440154"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_defender]$color <-"#31688e"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_forward]$color <- "#35b779"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_goalkeeper]$color <- "#fde725"
+```
+
+
+```{r}
+plot(france_final.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
+plot(croatia_final.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
 ```
