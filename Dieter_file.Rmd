@@ -60,6 +60,8 @@ france_belgium_semi <- read.csv("france_belgium_semi.csv")
 team_name_france_belgium_semi <- subset(france_belgium_semi, team.name == c("France", "Belgium"))
 
 france_only_semi <- subset(team_name_france_belgium_semi, team.name == "France")
+france_only_semi <- subset(france_only_semi, player.name != "Steve Mandanda")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Steve Mandanda")
 
 belgium_only_semi <- subset(team_name_france_belgium_semi, team.name == "Belgium")
 
@@ -101,5 +103,20 @@ belgium_midfielder <- c("Kevin De Bruyne", "Axel Witsel", "Yannick Ferreira Carr
 belgium_defender <- c("Thomas Meunier", "Anga Dedryck Boyata", "Jan Vertonghen", "Toby Alderweireld", "Leander Dendoncker", "Thomas Vermaelen", "Vincent Kompany")
 belgium_forward <- c("Eden Hazard", "Dries Mertens", "Romelu Lukaku Menama", "Michy Batshuayi Tunga")
 belgium_goalkeeper <- c("Thibaut Courtois")
+```
+
+```{r}
+V(france_semi.g)[V(france_semi.g)$name %in% france_midfielder]$color <- "#440154"
+V(france_semi.g)[V(france_semi.g)$name %in% france_defender]$color <- "#31688e"
+V(france_semi.g)[V(france_semi.g)$name %in% france_forward]$color <- "#35b779"    
+V(france_semi.g)[V(france_semi.g)$name %in% france_goalkeeper]$color <- "#fde725"
+```
+
+```{r}
+plot(france_semi.g)
+```
+
+```{r}
+V(words_edge.g)[V(words_edge.g)$name %in% colnames(words_sentence_matrix)]$color <- "cornflowerblue"
 ```
 
