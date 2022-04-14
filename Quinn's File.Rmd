@@ -88,6 +88,7 @@ dev.off()
 ```
 
 ```{r}
-connected_pass_france_final %>%
-  filter(team.name != possession_team.name)
+player_pass_france_f <- as.data.frame(table(france_only_final$player.name))
+player_recieve_france_f <- as.data.frame(table(france_only_final$pass.recipient.name))
+hist(player_recieve_france_f)
 ```
