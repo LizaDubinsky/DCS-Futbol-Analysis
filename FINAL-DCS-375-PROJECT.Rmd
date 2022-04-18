@@ -53,20 +53,69 @@ write.csv(france_argentina_round, "france_argentina_round.csv", row.names = FALS
 ```{r france-final-object}
 
 # clean the data frame to only include passes from france and croatia final
-team_name_france_croatia_final <- subset(france_croatia_final, team.name == c("France", "Croatia"))
+# reading in csv so that we dont have to re-run top part in case of a prematrue change to players.
+team_name_france_croatia_final <-  read.csv("france_croatia_final.csv")
+
+team_name_france_croatia_final <- subset(team_name_france_croatia_final, team.name == c("France", "Croatia"))
 
 france_only_final <- subset(team_name_france_croatia_final, team.name == "France")
-france_only_final1 <- subset(france_only_final, player.name  != "Steve Mandanda")
-france_only_final2 <- subset(france_only_final1, pass.recipient.name  != "Steve Mandanda")
+france_only_final <- subset(france_only_final, player.name  != "Steve Mandanda")
+france_only_final <- subset(france_only_final, pass.recipient.name  != "Steve Mandanda")
+
+france_only_final <- subset(france_only_final, player.name != "Presnel Kimpembe")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Presnel Kimpembe")
+
+france_only_final <- subset(france_only_final, player.name != "Thomas Lemar")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Thomas Lemar")
+
+france_only_final <- subset(france_only_final, player.name != "Ousmane Dembélé")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Ousmane Dembélé")
+
+france_only_final <- subset(france_only_final, player.name != "Benjamin Mendy")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Benjamin Mendy")
+
+france_only_final <- subset(france_only_final, player.name != "Benjamin Mendy")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Benjamin Mendy")
+	
+france_only_final <- subset(france_only_final, player.name != "Florian Thauvin")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Florian Thauvin")
+
+france_only_final <- subset(france_only_final, player.name != "Djibril Sidibé")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Djibril Sidibé")
+
+
+
 
 croatia_only_final <- subset(team_name_france_croatia_final, team.name == "Croatia")
-croatia_only_final1 <- subset(croatia_only_final, player.name  != "Lovre Kalinić")
-croatia_only_final2 <- subset(croatia_only_final1, pass.recipient.name  != "Lovre Kalinić")
+croatia_only_final <- subset(croatia_only_final, player.name  != "Lovre Kalinić")
+croatia_only_final <- subset(croatia_only_final, pass.recipient.name  != "Lovre Kalinić")
+
+croatia_only_final <- subset(croatia_only_final, player.name  != "Vedran Ćorluka")
+croatia_only_final <- subset(croatia_only_final, pass.recipient.name  != "Vedran Ćorluka")
+
+croatia_only_final <- subset(croatia_only_final, player.name  != "Tin Jedvaj")
+croatia_only_final <- subset(croatia_only_final, pass.recipient.name  != "Tin Jedvaj")
+
+croatia_only_final <- subset(croatia_only_final, player.name  != "Mateo Kovačić")
+croatia_only_final <- subset(croatia_only_final, pass.recipient.name  != "Mateo Kovačić")
+
+croatia_only_final <- subset(croatia_only_final, player.name  != "	Filip Bradarić")
+croatia_only_final <- subset(croatia_only_final, pass.recipient.name  != "Filip Bradarić")
+
+croatia_only_final <- subset(croatia_only_final, player.name  != "Duje Ćaleta-Car")
+croatia_only_final <- subset(croatia_only_final, pass.recipient.name  != "Duje Ćaleta-Car")
+
+croatia_only_final <- subset(croatia_only_final, player.name  != "Milan Badelj")
+croatia_only_final <- subset(croatia_only_final, pass.recipient.name  != "Milan Badelj")
+
+croatia_only_final <- subset(croatia_only_final, player.name  != "Josip Pivarić")
+croatia_only_final <- subset(croatia_only_final, pass.recipient.name  != "Josip Pivarić")
+
 
 
 # construct dataset for connected passes only 
-connected_pass_france_final <- subset(france_only_final2, is.na(pass.outcome.name))
-connected_pass_croatia_final <- subset(croatia_only_final2, is.na(pass.outcome.name))
+connected_pass_france_final <- subset(france_only_final, is.na(pass.outcome.name))
+connected_pass_croatia_final <- subset(croatia_only_final, is.na(pass.outcome.name))
 
 # create an edgelist of passes to and from players
 france_final <- cbind(connected_pass_france_final$player.name, connected_pass_france_final$pass.recipient.name)
