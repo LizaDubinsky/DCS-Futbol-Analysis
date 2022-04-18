@@ -15,7 +15,7 @@ library(igraph)
 ```{r clean-data}
 
 # read in the RDS
-wc_rds <- readRDS("/Users/Liza/Desktop/DCS-Futbol-Analysis/WC_events_clean.RDS")
+wc_rds <- readRDS("/Users/dietervillegas/Desktop/Network_Analysis/Final_project/DCS-Futbol-Analysis/WC_events_clean.RDS")
 
 # grab only the columns we're interested in for analysis
 wc_maxtrix <- cbind(wc_rds$period,wc_rds$timestamp, wc_rds$duration,wc_rds$possession_team.name,wc_rds$type.name,wc_rds$player.name,wc_rds$team.name,wc_rds$pass.length,wc_rds$pass.recipient.name,wc_rds$pass.outcome.name,wc_rds$ball_receipt.outcome.name,wc_rds$match_id,wc_rds$location.x,wc_rds$location.y,wc_rds$pass.end_location.x,wc_rds$pass.end_location.y)
@@ -53,7 +53,8 @@ france_argentina_round <- subset(network_passes, team.name == c("France", "Argen
 
 ```{r france-final-object}
 
-# read in csv containing semifinal game France vs Belgium
+
+# read in csv so that we don't have to re-run top part in case of a premature change to players.
 france_belgium_semi <- read.csv("france_belgium_semi.csv")
 
 # clean the data frame to only include passes from france and croatia final
@@ -63,7 +64,54 @@ france_only_semi <- subset(team_name_france_belgium_semi, team.name == "France")
 france_only_semi <- subset(france_only_semi, player.name != "Steve Mandanda")
 france_only_semi <- subset(france_only_semi, pass.recipient.name != "Steve Mandanda")
 
+france_only_semi <- subset(france_only_semi, player.name != "Thomas Lemar")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Thomas Lemar")
+
+france_only_semi <- subset(france_only_semi, player.name != "Steven N''Kemboanza Mike Christopher Nzonzi")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Steven N''Kemboanza Mike Christopher Nzonzi")
+
+france_only_semi <- subset(france_only_semi, player.name != "Presnel Kimpembe")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Presnel Kimpembe")
+
+france_only_semi <- subset(france_only_semi, player.name != "Ousmane Dembélé")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Ousmane Dembélé")
+
+france_only_semi <- subset(france_only_semi, player.name != "Nabil Fekir")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Nabil Fekir")
+
+france_only_semi <- subset(france_only_semi, player.name != "Florian Thauvin")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Florian Thauvin")
+
+france_only_semi <- subset(france_only_semi, player.name != "Benjamin Mendy")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Benjamin Mendy")
+
+
+
 belgium_only_semi <- subset(team_name_france_belgium_semi, team.name == "Belgium")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Thomas Vermaelen")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Thomas Vermaelen")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Dries Mertens")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Dries Mertens")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Thorgan Hazard")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Thorgan Hazard")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Youri Tielemans")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Youri Tielemans")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Adnan Januzaj")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Adnan Januzaj")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Anga Dedryck Boyata")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Anga Dedryck Boyata")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Leander Dendoncker")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Leander Dendoncker")
+
+
+
 
 # construct dataset for connected passes only 
 connected_pass_france_semi <- subset(france_only_semi, is.na(pass.outcome.name))
@@ -111,12 +159,16 @@ V(france_semi.g)[V(france_semi.g)$name %in% france_defender]$color <- "#31688e"
 V(france_semi.g)[V(france_semi.g)$name %in% france_forward]$color <- "#35b779"    
 V(france_semi.g)[V(france_semi.g)$name %in% france_goalkeeper]$color <- "#fde725"
 ```
+#### Do centrality and betweenesss 
+- take out players that did not actually play 
 
 ```{r}
-plot(france_semi.g)
+plot(france_semi.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
+plot(belgium_semi.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
 ```
 
-```{r}
-V(words_edge.g)[V(words_edge.g)$name %in% colnames(words_sentence_matrix)]$color <- "cornflowerblue"
-```
+
+
+
+
 
