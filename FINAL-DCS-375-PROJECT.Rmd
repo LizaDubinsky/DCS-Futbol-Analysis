@@ -228,9 +228,21 @@ barplot(france_final_from_ordered,las=2, cex.names = 0.5)
 
 ```
 
+N''Golo Kanté (midfielder)
+Benjamin Pavard
+Raphaël Varane
+Paul Pogba (midfielder)
+Antoine Griezmann
+Samuel Yves Umtiti
+Lucas Hernández Pi
+Blaise Matuidi (midfielder)
+Kylian Mbappé Lottin
+Corentin Tolisso (midfielder)
+Olivier Giroud
+Hugo Lloris
+Steven N''Kemboanza Mike Christopher Nzonzi (midfielder)
+Nabil Fekir
 
-
-france_midfielder <- c("Corentin Tolisso", "Paul Pogba", "N''Golo Kanté", "Blaise Matuidi", "Steven N''Kemboanza Mike Christopher Nzonzi", "Thomas Lemar", "Florian Thauvin")
 france_defender <- c("Benjamin Pavard", "Samuel Yves Umtiti", "Raphaël Varane", "Lucas Hernández Pi", "Presnel Kimpembe", "Djibril Sidibé", "Benjamin Mendy")
 france_forward <- c("Ousmane Dembélé", "Kylian Mbappé Lottin", "Antoine Griezmann", "Nabil Fekir", "Olivier Giroud")
 france_goalkeeper <- c("Hugo Lloris")
