@@ -137,6 +137,11 @@ plot(belgium_semi.g)
 dev.off()
 ```
 
+```{r}
+
+```
+
+
 ```{r identify-france-players}
 
 france_midfielder <- c("Corentin Tolisso", "Paul Pogba", "N''Golo Kanté", "Blaise Matuidi", "Steven N''Kemboanza Mike Christopher Nzonzi", "Thomas Lemar", "Florian Thauvin")
@@ -268,7 +273,21 @@ edge.count3(g)
 
 
 ```
+
 ```{r}
+from_table <-table(france_semi[,2])
+df_from_semi <- as.data.frame(from_table)
+
+france_semi_ordered <- sort(from_table, decreasing = TRUE)
+hi 
+par(mar=c(11,4,4,4)) # Increase margin size
+barplot(france_semi_ordered,las=2, cex.names = 0.5)
+'
+library(graphics)
+#sw.countdf<-as.data.frame(sw.count)
+maxd <- max(df_from_semi$Freq)
+usersh<-hist(df_from_semi$Freq, breaks=8, xlab = "Number of Women at an event", ylab = "Number of events with the given attendance", main = "Distribution of Attendees per Event")
+'
 
 ```
 
