@@ -163,8 +163,69 @@ V(france_semi.g)[V(france_semi.g)$name %in% france_goalkeeper]$color <- "#fde725
 - take out players that did not actually play 
 
 ```{r}
-plot(france_semi.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
-plot(belgium_semi.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
+png(file="france_semi.png", width=1000, height=1000)
+par(bg="transparent")
+plot(france_semi.g, vertex.size = 20, vertex.label.cex = 1, vertex.label.color = "white")
+dev.off()
+
+
+```
+
+# adding the soccer field as a background to the networks 
+```{r}
+#install.packages("magick")
+library(magick)
+```
+
+```{r}
+
+soccer_png <- image_read("/Users/dietervillegas/Desktop/Network_Analysis/Final_project/DCS-Futbol-Analysis/soccer_fil.png")
+france_png <- image_read("/Users/dietervillegas/Desktop/Network_Analysis/Final_project/DCS-Futbol-Analysis/france_semi.png")
+
+
+```
+```{r}
+image_background()
+```
+
+
+```{r}
+# so we dont have to re-read images from above
+france_pgn1 <- france_png
+soccer_field <-soccer_png
+# scaling the soccer_field to 1000 in height and having it without a background 
+#soccer_field <- image_scale(image_background(soccer_field, "none"), "x1000")
+
+#scaling france network of passes image to 1000 height
+france_pgn1 <- image_scale(france_pgn1, "x1000")
+#creating a composite of both images and moving the France network using offset to the right and down
+# scaling the soccer field to 1000 in height 
+final_image <- image_composite(image_scale(soccer_field, "x1000"), france_pgn1, offset = "+500+50")
+
+```
+
+```{r}
+#exporting image to folder 
+image_write(final_image,path = "semis_field_france.png", format = "png")
+```
+
+website explaning how to use magick 
+https://cran.r-project.org/web/packages/magick/vignettes/intro.html
+
+
+
+maybe isntead of weighted edges we switch node size depending on the amount of connections they have?
+but if we can fiugre out edge weight would be hugeee
+```{r}
+
+#png(file="france_semi.png", width=1000, height=1000)
+#par(bg="transparent")
+deg <- degree(france_semi.g, mode="all")
+#plot(france_semi.g, vertex.size = deg/4, vertex.label.cex = 1, vertex.label.color = "white")
+#dev.off()
+
+
+
 ```
 
 
@@ -172,3 +233,56 @@ plot(belgium_semi.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.colo
 
 
 
+
+```{r}
+trial_france <-france_semi
+
+trial_edlist_france<- get.edgelist(trial_france)
+
+
+#cbind( get.edgelist(g) , round( E(g)$weight, 3 ))
+```
+
+```{r}
+
+ee <- c(1,2,2,3,1,2,2,4,1,2,2,3)
+g <- graph(trial_france)
+
+plot(g)
+
+# Returns a two column matrix with edge names and counts
+edge.count1 <- function(g){
+    result <- cbind(E(g), count.multiple(g))
+    colnames(result) <- c("edge", "count")
+    result
+}
+# Returns a three column matrix with edges and counts
+edge.count2 <- function(g){
+  cbind(get.edgelist(g), count.multiple(g))
+}
+# Returns a data.frame of unique edges and counts
+edge.count3 <- function(g){
+     D <- data.frame(get.edgelist(g))  # convert to data frame
+     ones <- rep(1, nrow(D))   # a column of 1s
+     result <- aggregate(ones, by = as.list(D), FUN = sum)
+     names(result) <- c("from", "to", "count")
+     result
+}
+edge.count3(g)
+
+
+```
+```{r}
+
+```
+
+
+
+run a for loop for histogram 
+
+
+how france plays, 
+
+
+
+ 
