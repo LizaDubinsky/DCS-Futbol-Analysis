@@ -9,13 +9,15 @@ output: html_document
 ```{r load-libraries}
 library(dplyr)
 library(igraph) 
+#install.packages("magick")
+library(magick)
 ```
 
 
 ```{r clean-data}
 
 # read in the RDS
-wc_rds <- readRDS("/Users/Liza/Desktop/DCS-Futbol-Analysis/WC_events_clean.RDS")
+wc_rds <- readRDS("WC_events_clean.RDS")
 
 # grab only the columns we're interested in for analysis
 wc_maxtrix <- cbind(wc_rds$period,wc_rds$timestamp, wc_rds$duration,wc_rds$possession_team.name,wc_rds$type.name,wc_rds$player.name,wc_rds$team.name,wc_rds$pass.length,wc_rds$pass.recipient.name,wc_rds$pass.outcome.name,wc_rds$ball_receipt.outcome.name,wc_rds$match_id,wc_rds$location.x,wc_rds$location.y,wc_rds$pass.end_location.x,wc_rds$pass.end_location.y)
@@ -170,3 +172,40 @@ V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_goalkeeper]$color <- "#f
 plot(france_final.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
 plot(croatia_final.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
 ```
+
+```{r}
+png(file="france_final.png", width=1000, height=1000)
+par(bg="transparent")
+plot(france_final.g, vertex.size = 20, vertex.label.cex = 1, vertex.label.color = "white")
+dev.off()
+
+```
+
+
+```{r}
+
+soccer_png <- image_read("soccer_fil.png")
+france_png <- image_read("france_final.png")
+```
+
+
+```{r}
+# so we dont have to re-read images from above
+france_pgn1 <- france_png
+soccer_field <-soccer_png
+# scaling the soccer_field to 1000 in height and having it without a background 
+#soccer_field <- image_scale(image_background(soccer_field, "none"), "x1000")
+
+#scaling france network of passes image to 1000 height
+france_pgn1 <- image_scale(france_pgn1, "x1000")
+#creating a composite of both images and moving the France network using offset to the right and down
+# scaling the soccer field to 1000 in height 
+final_image <- image_composite(image_scale(soccer_field, "x1000"), france_pgn1, offset = "+500+50")
+
+```
+
+```{r}
+#exporting image to folder 
+image_write(final_image,path = "final_field_france.png", format = "png")
+```
+
