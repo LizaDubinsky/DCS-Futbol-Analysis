@@ -1,0 +1,168 @@
+---
+title: "new"
+author: "Jenniflore Beaubrun"
+date: '2022-04-19'
+output: html_document
+---
+
+```{r load-libraries}
+library(dplyr)
+library(igraph)
+```
+
+
+```{r clean-data}
+
+# read in the RDS
+wc_rds <- readRDS("/Users/jenniflore/Desktop/dcs 375/WC_events_clean.RDS")
+
+# grab only the columns we're interested in for analysis
+wc_maxtrix <- cbind(wc_rds$period,wc_rds$timestamp, wc_rds$duration,wc_rds$possession_team.name,wc_rds$type.name,wc_rds$player.name,wc_rds$team.name,wc_rds$pass.length,wc_rds$pass.recipient.name,wc_rds$pass.outcome.name,wc_rds$ball_receipt.outcome.name,wc_rds$match_id,wc_rds$location.x,wc_rds$location.y,wc_rds$pass.end_location.x,wc_rds$pass.end_location.y)
+
+# turn into a dataframe
+wc_df_official <- as.data.frame(wc_maxtrix)
+
+# rename the columns for analysis
+colnames(wc_df_official) <- c("period","timestamp","duration","possession_team.name","type.name","player.name","team.name","pass.length","pass.recipient.name","pass.outcome.name","ball_receipt.outcome.name","match_id","location.x","location.y","pass.end_location.x","pass.end_location.y")
+
+# grab only the passes
+network_passes <- subset(wc_df_official, type.name == "Pass")
+
+# create 4 data sets for four games we plan to analyze
+france_croatia_final <- subset(network_passes, possession_team.name == c("France", "Croatia"))
+
+france_belgium_semi <- subset(network_passes, team.name == c("France", "Belgium"))
+
+france_uruguay_quarter <- subset(network_passes, team.name == c("France", "Uruguay"))
+
+france_argentina_round <- subset(network_passes, team.name == c("France", "Argentina"))
+
+# write 4 csv files for each of these games
+
+#write.csv(france_croatia_final, "france_croatia_final.csv", row.names = FALSE)
+
+#write.csv(france_belgium_semi, "france_belgium_semi.csv", row.names = FALSE)
+
+#write.csv(france_uruguay_quarter, "france_uruguay_quarter.csv", row.names = FALSE)
+
+#write.csv(france_argentina_round, "france_argentina_round.csv", row.names = FALSE)
+
+```
+
+
+```{r belgium-final-object}
+
+
+# read in csv so that we don't have to re-run top part in case of a premature change to players.
+france_belgium_semi <- read.csv("france_belgium_semi.csv")
+
+# clean the data frame to only include passes from france and croatia final
+team_name_france_belgium_semi <- subset(france_belgium_semi, team.name == c("France", "Belgium"))
+
+belgium_only_semi <- subset(team_name_france_belgium_semi, team.name == "France")
+
+
+belgium_only_semi <- subset(team_name_france_belgium_semi, team.name == "Belgium")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Thomas Vermaelen")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Thomas Vermaelen")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Dries Mertens")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Dries Mertens")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Thorgan Hazard")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Thorgan Hazard")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Youri Tielemans")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Youri Tielemans")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Adnan Januzaj")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Adnan Januzaj")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Anga Dedryck Boyata")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Anga Dedryck Boyata")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Leander Dendoncker")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Leander Dendoncker")
+
+
+
+#construct dataset for connected passes only 
+connected_pass_belgium_semi <- subset(belgium_only_semi, is.na(pass.outcome.name))
+
+# create an edgelist of passes to and from players
+
+belgium_semi <- cbind(connected_pass_belgium_semi$player.name, connected_pass_belgium_semi$pass.recipient.name)
+
+# name these columns
+colnames(france_semi) <- c("from", "to")
+colnames(belgium_semi) <- c("from", "to")
+
+# create a graph object for network analysis
+belgium_semi.g <- graph.edgelist(belgium_semi, directed = TRUE) # makes a graph object
+
+png(file="belgium_semi.png", width=1000, height=1000)
+plot(belgium_semi.g)
+dev.off()
+```
+
+```{r identify-belgium-players}
+
+belgium_midfielder <- c("Kevin De Bruyne", "Axel Witsel", "Yannick Ferreira Carrasco", "Mousa Sidi Yaya Dembélé", "Thorgan Hazard", "Nacer Chadli", "Marouane Fellaini-Bakkioui", "Youri Tielemans", "Adnan Januzaj")
+belgium_defender <- c("Thomas Meunier", "Anga Dedryck Boyata", "Jan Vertonghen", "Toby Alderweireld", "Leander Dendoncker", "Thomas Vermaelen", "Vincent Kompany")
+belgium_forward <- c("Eden Hazard", "Dries Mertens", "Romelu Lukaku Menama", "Michy Batshuayi Tunga")
+belgium_goalkeeper <- c("Thibaut Courtois")
+```
+
+```{r}
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_midfielder]$color <- "#440154"
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_defender]$color <- "#31688e"
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_forward]$color <- "#35b779"    
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_goalkeeper]$color <- "#fde725"
+```
+#### Do centrality and betweenesss 
+- take out players that did not actually play 
+
+```{r}
+plot(belgium_semi.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
+```
+
+#### Betweeenness
+Run the following code to calculate betweenness scores for the top ten most between people in this network.  
+
+Betweenness centrality is a way of detecting the amount of influence a node has over the flow of information in a graph
+
+```{r}
+btwn.team <- betweenness(belgium_semi.g)
+names(btwn.team) <- V(belgium_semi.g)$name
+ind <- order(-btwn.team)
+btwn.team[ind][1:10]
+``` 
+#### Centrality
+#Most Central Players 
+Centrality scores for the top ten most central Player in this network
+
+```{r}
+cent.eig <- evcent(belgium_semi.g)
+names(cent.eig$vector) <- V(belgium_semi.g)$name
+ind <- order(-cent.eig$vector)
+cent.eig$vector[ind][1:10]
+```
+#Least Central Players 
+```{r}
+cent.eig <- evcent(belgium_semi.g)
+names(cent.eig$vector) <- V(belgium_semi.g)$name
+ind <- order(-cent.eig$vector)
+cent.eig$vector[ind][8:13]
+```
+
+#Histogram for Belgium Players 
+```{r}
+
+```
+
+
+
+
+
+
