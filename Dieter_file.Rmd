@@ -181,6 +181,7 @@ library(magick)
 
 soccer_png <- image_read("soccer_fil.png")
 france_png <- image_read("france_semi.png")
+
 ```
 
 
