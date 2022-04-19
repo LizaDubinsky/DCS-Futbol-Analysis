@@ -209,3 +209,28 @@ final_image <- image_composite(image_scale(soccer_field, "x1000"), france_pgn1, 
 image_write(final_image,path = "final_field_france.png", format = "png")
 ```
 
+
+```{r}
+france_final_passes_from <- table(france_final[, 1])
+france_final_passes_to <- table(france_final[, 2])
+
+croatia_final_passes_from <- table(croatia_final[, 1])
+croatia_final_passes_to <- table(croatia_final[, 2])
+```
+
+
+
+```{r}
+#france_final_positions_orered <- c()
+france_final_from_ordered <- sort(france_final_passes_from, decreasing = TRUE)
+par(mar=c(11,4,4,4)) # Increase margin size
+barplot(france_final_from_ordered,las=2, cex.names = 0.5)
+
+```
+
+
+
+france_midfielder <- c("Corentin Tolisso", "Paul Pogba", "N''Golo Kanté", "Blaise Matuidi", "Steven N''Kemboanza Mike Christopher Nzonzi", "Thomas Lemar", "Florian Thauvin")
+france_defender <- c("Benjamin Pavard", "Samuel Yves Umtiti", "Raphaël Varane", "Lucas Hernández Pi", "Presnel Kimpembe", "Djibril Sidibé", "Benjamin Mendy")
+france_forward <- c("Ousmane Dembélé", "Kylian Mbappé Lottin", "Antoine Griezmann", "Nabil Fekir", "Olivier Giroud")
+france_goalkeeper <- c("Hugo Lloris")
