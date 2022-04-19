@@ -279,6 +279,7 @@ from_table <-table(france_semi[,2])
 df_from_semi <- as.data.frame(from_table)
 
 france_semi_ordered <- sort(from_table, decreasing = TRUE)
+hi 
 par(mar=c(11,4,4,4)) # Increase margin size
 barplot(france_semi_ordered,las=2, cex.names = 0.5)
 '
