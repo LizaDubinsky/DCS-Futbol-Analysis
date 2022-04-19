@@ -15,7 +15,7 @@ library(igraph)
 ```{r clean-data}
 
 # read in the RDS
-wc_rds <- readRDS("/Users/dietervillegas/Desktop/Network_Analysis/Final_project/DCS-Futbol-Analysis/WC_events_clean.RDS")
+wc_rds <- readRDS("WC_events_clean.RDS")
 
 # grab only the columns we're interested in for analysis
 wc_maxtrix <- cbind(wc_rds$period,wc_rds$timestamp, wc_rds$duration,wc_rds$possession_team.name,wc_rds$type.name,wc_rds$player.name,wc_rds$team.name,wc_rds$pass.length,wc_rds$pass.recipient.name,wc_rds$pass.outcome.name,wc_rds$ball_receipt.outcome.name,wc_rds$match_id,wc_rds$location.x,wc_rds$location.y,wc_rds$pass.end_location.x,wc_rds$pass.end_location.y)
@@ -179,13 +179,10 @@ library(magick)
 
 ```{r}
 
-soccer_png <- image_read("/Users/dietervillegas/Desktop/Network_Analysis/Final_project/DCS-Futbol-Analysis/soccer_fil.png")
-france_png <- image_read("/Users/dietervillegas/Desktop/Network_Analysis/Final_project/DCS-Futbol-Analysis/france_semi.png")
+soccer_png <- image_read("soccer_fil.png")
+france_png <- image_read("france_semi.png")
 
 
-```
-```{r}
-image_background()
 ```
 
 
