@@ -9,7 +9,15 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Final project for DCS 375 on France's Players in the 2018 World Cup Semi-Final and Final
+
+```{r load-libraries, include = FALSE}
+library(dplyr)
+library(igraph) 
+#install.packages("magick")
+library(magick)
+```
+
+## Final project for DCS 375 on Players in the 2018 World Cup Semi-Final and Final
 
 
 ### Introduction 
@@ -23,17 +31,90 @@ In this project, we used Statsbomb event data from the [Dato-Futbol/passing-netw
 ### Background 
 
 2. Sufficient background to make the significance of your question legible for non-expert readers:
-Soccer background, motivation for question and why our question/hypotheses are significant
+Soccer background, motivation for question and why our question/hypotheses are significant (Dieter?)
 
 ### Methodology and Discussion 
 
+In the following sections, we will include our methodology for our analyses followed directly by our discussion of the relevant results and visualizations. 
+
 #### Filtering the Data 
 
-Filter for specific games, writing .csv files, removing extraneous players
+The original dataset included 227886 rows and 161 columns that covered the games of the 2018 World Cup. We decided to focus our analysis on the final and semi-final games of the 2018 World Cup, and filtered for variables concerning the teams, players, and type of play:
+
+```{r clean-data, include = FALSE}
+
+# read in the RDS
+wc_rds <- readRDS("WC_events_clean.RDS")
+
+# grab only the columns we're interested in for analysis
+wc_maxtrix <- cbind(wc_rds$period,wc_rds$timestamp, wc_rds$duration,wc_rds$possession_team.name,wc_rds$type.name,wc_rds$player.name,wc_rds$team.name,wc_rds$pass.length,wc_rds$pass.recipient.name,wc_rds$pass.outcome.name,wc_rds$ball_receipt.outcome.name,wc_rds$match_id,wc_rds$location.x,wc_rds$location.y,wc_rds$pass.end_location.x,wc_rds$pass.end_location.y)
+
+# turn into a dataframe
+wc_df_official <- as.data.frame(wc_maxtrix)
+
+# rename the columns for analysis
+colnames(wc_df_official) <- c("period","timestamp","duration","possession_team.name","type.name","player.name","team.name","pass.length","pass.recipient.name","pass.outcome.name","ball_receipt.outcome.name","match_id","location.x","location.y","pass.end_location.x","pass.end_location.y")
+```
+
+The below code allowed us to isolate only the passing plays for our analyses, as well as create 2 datasets and write 2 .csv files for the final and semi-final games:
+
+```{r filter-write-csv, warning  = FALSE}
+# grab only the passes
+network_passes <- subset(wc_df_official, type.name == "Pass")
+
+# create 2 data sets for 2 games we plan to analyze
+france_croatia_final <- subset(network_passes, possession_team.name == c("France", "Croatia"))
+
+france_belgium_semi <- subset(network_passes, team.name == c("France", "Belgium"))
+
+# write 2 csv files for each of these games
+
+write.csv(france_croatia_final, "france_croatia_final.csv", row.names = FALSE)
+
+write.csv(france_belgium_semi, "france_belgium_semi.csv", row.names = FALSE)
+
+```
+
+Using these .csv files, we filtered the data further to remove any extraneous rows from other games, remove players who didn't play in either the final or semi-final, and isolate only the connected passes by removing any pass outcomes that were "Incomplete", "Out", or "Unknown". The below code is for the French final:
+
+```{r france-final-object, warning= FALSE}
+
+# clean the data frame to only include passes from france and croatia final
+# reading in csv so that we dont have to re-run top part in case of a premature change to players
+team_name_france_croatia_final <-  read.csv("france_croatia_final.csv")
+
+team_name_france_croatia_final <- subset(team_name_france_croatia_final, team.name == c("France", "Croatia"))
+
+france_only_final <- subset(team_name_france_croatia_final, team.name == "France")
+france_only_final <- subset(france_only_final, player.name  != "Steve Mandanda")
+france_only_final <- subset(france_only_final, pass.recipient.name  != "Steve Mandanda")
+
+france_only_final <- subset(france_only_final, player.name != "Presnel Kimpembe")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Presnel Kimpembe")
+
+france_only_final <- subset(france_only_final, player.name != "Thomas Lemar")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Thomas Lemar")
+
+# construct dataset for connected passes only 
+connected_pass_france_final <- subset(france_only_final, is.na(pass.outcome.name))
+
+```
 
 #### Creating Network Objects
 
-Creating edgelists of passes to and from players on each team in both games
+We then used the player name and pass recipient name columns of our datasets to create an edgelist and then a network object of connected passes to and from players on each team in both games. The below code is for the French final:
+
+```{r}
+# create an edgelist of passes to and from players
+france_final <- cbind(connected_pass_france_final$player.name, connected_pass_france_final$pass.recipient.name)
+
+# name these columns
+colnames(france_final) <- c("from", "to")
+
+# create a graph object for network analysis
+france_final.g <- graph.edgelist(france_final, directed = TRUE) # makes a graph object
+
+```
 
 #### Visualizing Directed Networks
 
@@ -51,15 +132,30 @@ Code and calculations for exploratory statistics (include code snippets and inte
 
 Creating barplots based on position, fit power law distribution and calculate p-values (include code snippets and interpretation)
 
-Null model of power-law distribution, calculate p-value associated with fit of pass distribution histogram to preferential attachment
-
 [Final France Received Passes.](final_france_received_passes.png)
 
 [Final France Sent Passes.](final_france_sent_passes.png)
 
+**Power Law Fit for the Passes and Receptions by the French Team in the Final:** 
+
+Using a frequency table for the number of passes and receptions made by the French team in the 2018 World Cup final, we were able to run a power law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 4.222 and 6.188 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the passes made by each of the players on the French team are less skewed and the receptions are more skewed. If we look at the p-values, we see that the passes have a p-value of 0.954, which implies that it has a relatively high fit for the power law; the p-value for the receptions is 0.948, which also implies that the receptions by players have a relatively high fit for the power law. We can suggest that, in the final, the French team was attempting to spread out their passes a little bit because the Croatian players were heavily defending their star players, which lead to a lower fit for the receptions. It also seems like the passes would be made by those in the midfield who were “running” whatever “play” the French team was trying to execute so that they could score a goal, which suggests that the French team was very organized, which makes sense because they were the veteran team. So, the passers have a higher fit for the power law, but the receivers do not have as high of a fit because they are trying to evade the Croatian defenders guarding their star players who would be the ones that could potentially score the most goals.
+
 [Final Croatia Received Passes.](final_croatia_received_passes.png)
 
 [Final Croatia Sent Passes.](final_croatia_sent_passes.png)
+
+**Power Law Fit for the Passes and Receptions by the Croatian Team in the Final:** 
+
+Using a similar frequency table, like the one used above, for the number of passes and receptions made by the Croatian team in the 2018 World Cup final, we were able to run a power-law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 2.333 and 7.001 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the number of passes made by each of the Croatian players is less skewed, but the receptions are very skewed. If we look at the p-values, we see that the passes have a p-value of 0.638, which implies that it has a relatively low fit for the power law. The number of passes is more evenly distributed because anyone can steal the ball, and thus make a pass. Conversely, we see that the p-value for the receptions is 0.999, which says that all of the receptions made do fit the power law very well. This makes sense because when looking to advance up the field, you want to pass it to your best players so that they may score a goal, which makes sense because France was in control of this game from the start. So, a few players receive the majority of the passes, whereas the rest of the players only receive the ball a few times because you want your best players to have control of the ball so that you can score goals and win the game. In the context of the game, we believe that the reason we came to these conclusions is that the defenders are stealing the ball and making passes, but they are passing to the offensive players so that they can counterattack and score. One of the most effective ways to score a goal in soccer is to quickly get control of the ball while the other team is attacking and make a lightning-quick drive for the goal because the other team is focused on their own attack. Counterattacks are effective plays and lead to a good shot for a team to score a goal, which Croatia needed in this game because France was leading from the start.
+
+
+**Power Law Fit for the Passes and Receptions by the French Team in the Semifinal:** 
+
+Using a frequency table for the number of passes and receptions made by the French team in the 2018 World Cup semifinal against Belgium, we were able to run a power law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 4.766 and 4.205 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the passes and receptions made by each of the players on the French team are skewed at almost the same amount. If we look at the p-values, we see that the passes have a p-value of 0.924, which implies that it has a relatively high fit for the power law; the p-value for the receptions is 0.987, which also implies that the receptions by players have a higher fit for the power law. We can suggest that, in the semifinal, the French team was attempting to give the ball to their star players, which leads to a higher fit for the receptions. Anyone can steal and pass the ball, but which player you pass the ball to so that they can make an offensive play matters. If you give the ball to the star attackmen, then they have a good chance of scoring. This was a hard game for France, and they needed their star players to have the ball so they could score and thus win the game, which they did. 
+
+**Power Law Fit for the Passes and Receptions by the Belgian Team in the Semifinal:** 
+
+Using a frequency table for the number of passes and receptions made by the Belgian team in the 2018 World Cup semifinal against France, we were able to run a power law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 7.322 and 7.591 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the passes and receptions made by each of the players on the Belgian team are skewed at almost the same amount, but this alpha is very high, so the data we collected is very skewed. If we look at the p-values, we see that the passes have a p-value of 0.999, which implies that it has a very high fit for the power law; the p-value for the receptions is also 0.999, which again implies that the receptions by players have a very high fit for the power law. We can suggest that, in the semifinal, the star players on the Belgian team had the vast majority of control of the ball. This would lead us to believe that the Belgian team is not as deep in terms of talent, and that they were giving it to their star players because this was a very tough game for them. The star players on the Belgian team needed to have the ball because they possessed the highest ability to score a goal against the veteran French team. Belgium did lose this game, but the score was 1-0, which suggests that both teams were playing very hard and had similar strategies.
 
 
 5. References to at least four pieces of scholarly writing (these should include readings from the disciplinary or domain space that your question is in, as well as network theory readings from the course)
@@ -69,8 +165,8 @@ Null model of power-law distribution, calculate p-value associated with fit of p
 3. A network theory analysis of football strategies (https://arxiv.org/pdf/1206.6904.pdf)
 4. Play-by-Play Network Analysis in Football (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6669815/)
 5. Player position relationships with centrality in the passing network of world cup soccer teams: Win/loss match comparisons (https://reader.elsevier.com/reader/sd/pii/S0960077920300242?token=8E57B44BFF232C5A65695EB10963EC50F09AA44F926BA77E421EA97D4C50493E29D978F1D360149CC7A674D5CF2994E8&originRegion=us-east-1&originCreation=20220405191913)
+6. Nepusz, T., &amp; Csardi, G. (n.d.). Fit_power_law: Fitting a power-law distribution function to discrete data. RDocumentation. Retrieved April 19, 2022, from (https://www.rdocumentation.org/packages/igraph/versions/1.3.0/topics/fit_power_law)  
 
-6. Your data (original github repository and .csv files)
 
 
 
