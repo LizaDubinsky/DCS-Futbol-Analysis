@@ -166,11 +166,6 @@ V(france_semi.g)[V(france_semi.g)$name %in% france_goalkeeper]$color <- "#fde725
 
 
 ```{r}
-
-```
-
-
-```{r}
 V(france_semi.g)[V(france_semi.g)$name %in% france_midfielder]$shape <- "square"
 V(france_semi.g)[V(france_semi.g)$name %in% france_defender]$shape <-  "circle"
 V(france_semi.g)[V(france_semi.g)$name %in% france_forward]$shape <- "rectangle"   
@@ -185,18 +180,16 @@ png(file="france_semi.png", width=1000, height=1000)
 par(bg="transparent")
 plot(france_semi.g, vertex.size = 20, vertex.label.cex = 1, vertex.label.color = "white")
 dev.off()
-
-
 ```
 
-# adding the soccer field as a background to the networks 
+### adding the soccer field as a background to the networks 
 ```{r}
 #install.packages("magick")
 library(magick)
 ```
 
 ```{r}
-
+#importing both a png image of a soccer field and the france network of passes image created above
 soccer_png <- image_read("soccer_fil.png")
 france_png <- image_read("france_semi.png")
 
@@ -207,8 +200,6 @@ france_png <- image_read("france_semi.png")
 # so we dont have to re-read images from above
 france_pgn1 <- france_png
 soccer_field <-soccer_png
-# scaling the soccer_field to 1000 in height and having it without a background 
-#soccer_field <- image_scale(image_background(soccer_field, "none"), "x1000")
 
 #scaling france network of passes image to 1000 height
 france_pgn1 <- image_scale(france_pgn1, "x1000")
@@ -239,15 +230,11 @@ deg <- degree(france_semi.g, mode="all")
 #dev.off()
 ```
 
-
+## Creating Barplots for the Semifinal depicting the number of passes sent and received from each player
+### France semi-final passes sent from each player 
 ```{r}
-
-```
-
-
-
-```{r}
-from_table <-table(france_semi[,2])
+#passes sent from each player data frame creation
+from_table <-table(france_semi[,1])
 df_from_semi <- as.data.frame(from_table)
 
 ##having extra df unchanged df just in case for future use
@@ -288,20 +275,153 @@ mycolors <- c("#440154","#31688e","#35b779","#fde725")
 df_from_semi_ordered <- df_from_semi[order(-df_from_semi$Freq),,]
 par(mar=c(11,4,4,4)) # Increase margin size
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
-barplot(df_from_semi_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_ordered$Var1, decreasing = TRUE, ylab = "Number of passes from", xlab = "Player" ,col = mycolors[df_from_semi_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_ordered$Position), args.legend = list("topright", fill =mycolors ))
+barplot(df_from_semi_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_ordered$Var1, decreasing = TRUE, ylab = "Number of passes from" ,col = mycolors[df_from_semi_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Complete Passes Sent in the 2018 World Cup Semi-Final (France)")
 
-'
-, legend.text =levels(df_from_semi_ordered$Position), args.legend = mycolors
-library(graphics)
-#sw.countdf<-as.data.frame(sw.count)
-maxd <- max(df_from_semi$Freq)
-usersh<-hist(df_from_semi$Freq, breaks=8, xlab = "Number of Women at an event", ylab = "Number of events with the given attendance", main = "Distribution of Attendees per Event")
-'
 ```
 
+### France semi-final passes received by each player 
+```{r}
+#passes sent from each player data frame creation
+to_table <-table(france_semi[,2])
+df_to_semi <- as.data.frame(to_table)
+
+##having extra df unchanged df just in case for future use
+extra_df_semi_1<- df_to_semi
+
+#creating new column in our data frame
+df_to_semi$Position <- "a"
+#for loop that inputs the position on of the player in the new position column
+for(i in 1:nrow(df_to_semi)){
+  # our element we are working with
+  df_row_check <- df_to_semi$Var1[i]
+  # checking if the player is a goalkeeper 
+  if(df_row_check %in% france_goalkeeper){
+    df_to_semi$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
+  }
+  # checking if the player is a defender 
+  if(df_row_check %in% france_defender){
+    df_to_semi$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
+  }
+   # checking if the player is a midfielder 
+  if(df_row_check %in% france_midfielder){
+    df_to_semi$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
+  }
+   # checking if the player is a forward
+  if(df_row_check %in% france_forward){
+    df_to_semi$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
+  }
+  
+}
+
+# making the positions a factor to categorize the different positions
+df_to_semi$Position <- as.factor(df_to_semi$Position)
+# Selecting specific colors to use for barplot 
+mycolors <- c("#440154","#31688e","#35b779","#fde725")
 
 
+# sorting the data frame to have player that completed the highest number of passes 
+df_to_semi_ordered <- df_to_semi[order(-df_to_semi$Freq),,]
+par(mar=c(11,4,4,4)) # Increase margin size
+# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
+barplot(df_to_semi_ordered$Freq,decreasing = TRUE, names.arg = df_to_semi_ordered$Var1, decreasing = TRUE, ylab = "Number of passes from" ,col = mycolors[df_to_semi_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Semi-Final (France)")
 
+```
+
+### Belgium semi-final passes sent from each player
+```{r}
+#passes sent from each player data frame creation
+from_table_bel <-table(belgium_semi[,1])
+df_from_semi_bel <- as.data.frame(from_table_bel)
+
+##having extra df unchanged df just in case for future use
+extra_df_semi_bel<- df_from_semi_bel
+
+#creating new column in our data frame
+df_from_semi_bel$Position <- "a"
+#for loop that inputs the position on of the player in the new position column
+for(i in 1:nrow(df_from_semi_bel)){
+  # our element we are working with
+  df_row_check <- df_from_semi_bel$Var1[i]
+  # checking if the player is a goalkeeper 
+  if(df_row_check %in% belgium_goalkeeper){
+    df_from_semi_bel$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
+  }
+  # checking if the player is a defender 
+  if(df_row_check %in% belgium_defender){
+    df_from_semi_bel$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
+  }
+   # checking if the player is a midfielder 
+  if(df_row_check %in% belgium_midfielder){
+    df_from_semi_bel$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
+  }
+   # checking if the player is a forward
+  if(df_row_check %in% belgium_forward){
+    df_from_semi_bel$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
+  }
+  
+}
+
+# making the positions a factor to categorize the different positions
+df_from_semi_bel$Position <- as.factor(df_from_semi_bel$Position)
+# Selecting specific colors to use for barplot 
+mycolors <- c("#440154","#31688e","#35b779","#fde725")
+
+
+# sorting the data frame to have player that completed the highest number of passes 
+df_from_semi_bel_ordered <- df_from_semi_bel[order(-df_from_semi_bel$Freq),,]
+par(mar=c(11,4,4,4)) # Increase margin size
+# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
+barplot(df_from_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_bel_ordered$Var1, decreasing = TRUE, ylab = "Number of passes from" ,col = mycolors[df_from_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Complete Passes Sent in the 2018 World Cup Semi-Final (Belgium)")
+
+```
+
+### France semi-final passes received by each player 
+```{r}
+#passes received from each player data frame creation
+to_table_bel <-table(belgium_semi[,2])
+df_to_semi_bel <- as.data.frame(to_table_bel)
+
+##having extra df unchanged df just in case for future use
+extra_df_semi_bel_to<- df_to_semi_bel
+
+#creating new column in our data frame
+df_to_semi_bel$Position <- "a"
+#for loop that inputs the position on of the player in the new position column
+for(i in 1:nrow(df_to_semi_bel)){
+  # our element we are working with
+  df_row_check <- df_to_semi_bel$Var1[i]
+  # checking if the player is a goalkeeper 
+  if(df_row_check %in% belgium_goalkeeper){
+    df_to_semi_bel$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
+  }
+  # checking if the player is a defender 
+  if(df_row_check %in% belgium_defender){
+    df_to_semi_bel$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
+  }
+   # checking if the player is a midfielder 
+  if(df_row_check %in% belgium_midfielder){
+    df_to_semi_bel$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
+  }
+   # checking if the player is a forward
+  if(df_row_check %in% belgium_forward){
+    df_to_semi_bel$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
+  }
+  
+}
+
+# making the positions a factor to categorize the different positions
+df_to_semi_bel$Position <- as.factor(df_to_semi_bel$Position)
+# Selecting specific colors to use for barplot 
+mycolors <- c("#440154","#31688e","#35b779","#fde725")
+
+
+# sorting the data frame to have player that completed the highest number of passes 
+df_to_semi_bel_ordered <- df_to_semi_bel[order(-df_to_semi_bel$Freq),,]
+par(mar=c(11,4,4,4)) # Increase margin size
+# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
+barplot(df_to_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_to_semi_bel_ordered$Var1, decreasing = TRUE, ylab = "Number of passes from" ,col = mycolors[df_to_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Semi-Final (Belgium)")
+
+```
 
 
  
