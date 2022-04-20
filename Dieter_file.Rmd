@@ -9,6 +9,7 @@ output: html_document
 ```{r load-libraries}
 library(dplyr)
 library(igraph)
+library(RColorBrewer)
 ```
 
 
@@ -129,17 +130,15 @@ colnames(belgium_semi) <- c("from", "to")
 # create a graph object for network analysis
 france_semi.g <- graph.edgelist(france_semi, directed = TRUE) # makes a graph object
 belgium_semi.g <- graph.edgelist(belgium_semi, directed = TRUE) # makes a graph object
-
+'
 png(file="france_semi.png", width=1000, height=1000)
 plot(france_semi.g, )
 png(file="belgium_semi.png", width=1000, height=1000)
 plot(belgium_semi.g)
 dev.off()
+'
 ```
 
-```{r}
-
-```
 
 
 ```{r identify-france-players}
@@ -164,10 +163,24 @@ V(france_semi.g)[V(france_semi.g)$name %in% france_defender]$color <- "#31688e"
 V(france_semi.g)[V(france_semi.g)$name %in% france_forward]$color <- "#35b779"    
 V(france_semi.g)[V(france_semi.g)$name %in% france_goalkeeper]$color <- "#fde725"
 ```
-#### Do centrality and betweenesss 
-- take out players that did not actually play 
+
 
 ```{r}
+
+```
+
+
+```{r}
+V(france_semi.g)[V(france_semi.g)$name %in% france_midfielder]$shape <- "square"
+V(france_semi.g)[V(france_semi.g)$name %in% france_defender]$shape <-  "circle"
+V(france_semi.g)[V(france_semi.g)$name %in% france_forward]$shape <- "rectangle"   
+V(france_semi.g)[V(france_semi.g)$name %in% france_goalkeeper]$shape <- "sphere"
+
+```
+
+
+```{r}
+set.seed(1)
 png(file="france_semi.png", width=1000, height=1000)
 par(bg="transparent")
 plot(france_semi.g, vertex.size = 20, vertex.label.cex = 1, vertex.label.color = "white")
@@ -201,7 +214,7 @@ soccer_field <-soccer_png
 france_pgn1 <- image_scale(france_pgn1, "x1000")
 #creating a composite of both images and moving the France network using offset to the right and down
 # scaling the soccer field to 1000 in height 
-final_image <- image_composite(image_scale(soccer_field, "x1000"), france_pgn1, offset = "+500+50")
+final_image <- image_composite(image_scale(soccer_field, "x1000"), france_pgn1, offset = "+500+0")
 
 ```
 
@@ -224,79 +237,70 @@ but if we can fiugre out edge weight would be hugeee
 deg <- degree(france_semi.g, mode="all")
 #plot(france_semi.g, vertex.size = deg/4, vertex.label.cex = 1, vertex.label.color = "white")
 #dev.off()
-
-
-
 ```
-
-
-
-
-
 
 
 ```{r}
-trial_france <-france_semi
-
-trial_edlist_france<- get.edgelist(trial_france)
-
-
-#cbind( get.edgelist(g) , round( E(g)$weight, 3 ))
-```
-
-```{r}
-
-ee <- c(1,2,2,3,1,2,2,4,1,2,2,3)
-g <- graph(trial_france)
-
-plot(g)
-
-# Returns a two column matrix with edge names and counts
-edge.count1 <- function(g){
-    result <- cbind(E(g), count.multiple(g))
-    colnames(result) <- c("edge", "count")
-    result
-}
-# Returns a three column matrix with edges and counts
-edge.count2 <- function(g){
-  cbind(get.edgelist(g), count.multiple(g))
-}
-# Returns a data.frame of unique edges and counts
-edge.count3 <- function(g){
-     D <- data.frame(get.edgelist(g))  # convert to data frame
-     ones <- rep(1, nrow(D))   # a column of 1s
-     result <- aggregate(ones, by = as.list(D), FUN = sum)
-     names(result) <- c("from", "to", "count")
-     result
-}
-edge.count3(g)
-
 
 ```
+
+
 
 ```{r}
 from_table <-table(france_semi[,2])
 df_from_semi <- as.data.frame(from_table)
 
-france_semi_ordered <- sort(from_table, decreasing = TRUE)
-hi 
+##having extra df unchanged df just in case for future use
+extra_df_semi<- df_from_semi
+
+#creating new column in our data frame
+df_from_semi$Position <- "a"
+#for loop that inputs the position on of the player in the new position column
+for(i in 1:nrow(df_from_semi)){
+  # our element we are working with
+  df_row_check <- df_from_semi$Var1[i]
+  # checking if the player is a goalkeeper 
+  if(df_row_check %in% france_goalkeeper){
+    df_from_semi$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
+  }
+  # checking if the player is a defender 
+  if(df_row_check %in% france_defender){
+    df_from_semi$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
+  }
+   # checking if the player is a midfielder 
+  if(df_row_check %in% france_midfielder){
+    df_from_semi$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
+  }
+   # checking if the player is a forward
+  if(df_row_check %in% france_forward){
+    df_from_semi$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
+  }
+  
+}
+
+# making the positions a factor to categorize the different positions
+df_from_semi$Position <- as.factor(df_from_semi$Position)
+# Selecting specific colors to use for barplot 
+mycolors <- c("#440154","#31688e","#35b779","#fde725")
+
+
+# sorting the data frame to have player that completed the highest number of passes 
+df_from_semi_ordered <- df_from_semi[order(-df_from_semi$Freq),,]
 par(mar=c(11,4,4,4)) # Increase margin size
-barplot(france_semi_ordered,las=2, cex.names = 0.5)
+# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
+barplot(df_from_semi_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_ordered$Var1, decreasing = TRUE, ylab = "Number of passes from", xlab = "Player" ,col = mycolors[df_from_semi_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_ordered$Position), args.legend = list("topright", fill =mycolors ))
+
 '
+, legend.text =levels(df_from_semi_ordered$Position), args.legend = mycolors
 library(graphics)
 #sw.countdf<-as.data.frame(sw.count)
 maxd <- max(df_from_semi$Freq)
 usersh<-hist(df_from_semi$Freq, breaks=8, xlab = "Number of Women at an event", ylab = "Number of events with the given attendance", main = "Distribution of Attendees per Event")
 '
-
 ```
 
 
 
-run a for loop for histogram 
-
-
-how france plays, 
 
 
 
