@@ -171,7 +171,7 @@ dev.off()
 ```
 
 ```{r france-final-passes-from-barplot}
-png(file="final_france_sent_passes.png", width=700, height=800)
+png(file="final_france_sent_passes.png", width=700, height=500)
 france_final_from_ordered <- sort(france_final_passes_from, decreasing = TRUE)
 par(mar=c(11,4,4,4)) # Increase margin size
 barplot(france_final_from_ordered,las=2, cex.names = 0.5, col = c("#440154", "#31688e", "#31688e", "#440154", "#35b779", "#31688e", "#31688e", "#440154", "#35b779", "#440154", "#35b779",  "#fde725", "#440154", "#35b779"), ylab = "Number of Passes Sent", main = "Passes Sent in the 2018 World Cup Final (France)")
@@ -180,7 +180,7 @@ dev.off()
 ```
 
 ```{r croatia-final-passes-to-barplot}
-png(file="final_croatia_received_passes.png", width=700, height=800)
+png(file="final_croatia_received_passes.png", width=700, height=500)
 croatia_final_to_ordered <- sort(croatia_final_passes_to, decreasing = TRUE)
 par(mar=c(11,4,4,4)) # Increase margin size
 barplot(croatia_final_to_ordered,las=2, cex.names = 0.5, col = c("#440154", "#31688e", "#31688e", "#440154", "#440154", "#31688e", "#31688e", "#440154", "#35b779", "#35b779", "#35b779", "#fde725", "#35b779"), ylab = "Number of Passes Received", main = "Passes Received in the 2018 World Cup Final (Croatia)")
@@ -189,7 +189,7 @@ dev.off()
 ```
 
 ```{r croatia-final-passes-from-barplot}
-png(file="final_croatia_sent_passes.png", width=700, height=800)
+png(file="final_croatia_sent_passes.png", width=700, height=500)
 croatia_final_from_ordered <- sort(croatia_final_passes_from, decreasing = TRUE)
 par(mar=c(11,4,4,4)) # Increase margin size
 barplot(croatia_final_from_ordered,las=2, cex.names = 0.5, col = c("#440154", "#440154", "#31688e", "#440154", "#31688e", "#31688e", "#31688e", "#440154", "#35b779", "#fde725", "#35b779", "#35b779", "#35b779"), ylab = "Number of Passes Sent", main = "Passes Sent in the 2018 World Cup Final (Croatia)")

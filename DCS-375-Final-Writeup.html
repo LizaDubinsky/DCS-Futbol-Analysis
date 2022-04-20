@@ -171,21 +171,55 @@ pre code {
 </div>
 
 
+<style type="text/css">
+  body{
+  font-size: 12pt;
+}
+</style>
 <div id="final-project-for-dcs-375-on-frances-players-in-the-2018-world-cup-semi-final-and-final" class="section level2">
 <h2>Final project for DCS 375 on France’s Players in the 2018 World Cup Semi-Final and Final</h2>
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<p>In this project, we used Statsbomb event data from the <a href="https://github.com/Dato-Futbol/passing-networks">Dato-Futbol/passing-networks GitHub repository</a> to analyze the final and semi-final games in the 2018 World Cup. Motivated by scholarly articles on constructing and analyzing passing networks, we used network analysis to explore the following questions:</p>
 <ol style="list-style-type: decimal">
-<li>The scholarly question that you are exploring:</li>
+<li>What players are central to the directed networks of the France-Croatia final and France-Belgium semi-final? What positions do they play?</li>
+<li>How are the number of passes allocated across players on each team?</li>
 </ol>
-<p>What players are central to the directed networks of the France-Croatia final and France-Belgium semi-final? What positions do they play? How are the number of passes allocated across players on each team?</p>
+</div>
+<div id="background" class="section level3">
+<h3>Background</h3>
 <ol start="2" style="list-style-type: decimal">
 <li>Sufficient background to make the significance of your question legible for non-expert readers: Soccer background, motivation for question and why our question/hypotheses are significant</li>
 </ol>
-<p>3, A discussion of methodology:</p>
-<p>Filter for specific games, color code nodes using vectors for player positions, graph network objects on field Calculate centrality and betweenness Calculate number of passes received and “given/sent” per player per team to construct pass distrubution histogram Null model of power-law distribution, calculate p-value associated with fit of pass distribution histogram to preferential attachment</p>
-<ol start="4" style="list-style-type: decimal">
-<li>Code snippets:</li>
-</ol>
-<p>Filtering code for specific games, code to color nodes by position played, code to overlay on soccer field, code for pass distribution histogram</p>
+</div>
+<div id="methodology-and-discussion" class="section level3">
+<h3>Methodology and Discussion</h3>
+<div id="filtering-the-data" class="section level4">
+<h4>Filtering the Data</h4>
+<p>Filter for specific games, writing .csv files, removing extraneous players</p>
+</div>
+<div id="creating-network-objects" class="section level4">
+<h4>Creating Network Objects</h4>
+<p>Creating edgelists of passes to and from players on each team in both games</p>
+</div>
+<div id="visualizing-directed-networks" class="section level4">
+<h4>Visualizing Directed Networks</h4>
+<p>Code and process for visualizing directed networks on soccer fields, color and shape of nodes by player position (include code snippets and interpretation)</p>
+<p><a href="final_field_croatia.png">Final Field Croatia.</a></p>
+<p><a href="final_field_france.png">Final Field France.</a></p>
+</div>
+<div id="centrality-and-betweenness" class="section level4">
+<h4>Centrality and Betweenness</h4>
+<p>Code and calculations for exploratory statistics (include code snippets and interpretation)</p>
+</div>
+<div id="modeling" class="section level4">
+<h4>Modeling</h4>
+<p>Creating barplots based on position, fit power law distribution and calculate p-values (include code snippets and interpretation)</p>
+<p>Null model of power-law distribution, calculate p-value associated with fit of pass distribution histogram to preferential attachment</p>
+<p><a href="final_france_received_passes.png">Final France Received Passes.</a></p>
+<p><a href="final_france_sent_passes.png">Final France Sent Passes.</a></p>
+<p><a href="final_croatia_received_passes.png">Final Croatia Received Passes.</a></p>
+<p><a href="final_croatia_sent_passes.png">Final Croatia Sent Passes.</a></p>
 <ol start="5" style="list-style-type: decimal">
 <li><p>References to at least four pieces of scholarly writing (these should include readings from the disciplinary or domain space that your question is in, as well as network theory readings from the course)</p></li>
 <li><p>Football passing networks using R (<a href="https://www.datofutbol.cl/passing-networks-r/" class="uri">https://www.datofutbol.cl/passing-networks-r/</a>)</p></li>
@@ -195,9 +229,8 @@ pre code {
 <li><p>Player position relationships with centrality in the passing network of world cup soccer teams: Win/loss match comparisons (<a href="https://reader.elsevier.com/reader/sd/pii/S0960077920300242?token=8E57B44BFF232C5A65695EB10963EC50F09AA44F926BA77E421EA97D4C50493E29D978F1D360149CC7A674D5CF2994E8&amp;originRegion=us-east-1&amp;originCreation=20220405191913" class="uri">https://reader.elsevier.com/reader/sd/pii/S0960077920300242?token=8E57B44BFF232C5A65695EB10963EC50F09AA44F926BA77E421EA97D4C50493E29D978F1D360149CC7A674D5CF2994E8&amp;originRegion=us-east-1&amp;originCreation=20220405191913</a>)</p></li>
 <li><p>Your data (original github repository and .csv files)</p></li>
 </ol>
-<p>Original github repository (<a href="https://github.com/Dato-Futbol/passing-networks" class="uri">https://github.com/Dato-Futbol/passing-networks</a>)</p>
-<p>Inserting images:</p>
-<p><a href="final_field_croatia.png">Final Field Croatia.</a> <a href="final_field_france.png">Final Field France.</a></p>
+</div>
+</div>
 </div>
 
 
