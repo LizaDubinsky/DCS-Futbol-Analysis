@@ -139,6 +139,7 @@ dev.off()
 
 ```{r identify-france-players}
 
+# player positions on team France in the final
 france_midfielder <- c("Corentin Tolisso", "Paul Pogba", "N''Golo Kanté", "Blaise Matuidi", "Steven N''Kemboanza Mike Christopher Nzonzi", "Thomas Lemar", "Florian Thauvin")
 france_defender <- c("Benjamin Pavard", "Samuel Yves Umtiti", "Raphaël Varane", "Lucas Hernández Pi", "Presnel Kimpembe", "Djibril Sidibé", "Benjamin Mendy")
 france_forward <- c("Ousmane Dembélé", "Kylian Mbappé Lottin", "Antoine Griezmann", "Nabil Fekir", "Olivier Giroud")
@@ -147,6 +148,7 @@ france_goalkeeper <- c("Hugo Lloris")
 
 ```{r identify-croatia-players}
 
+# player positions on team Croatia in the final
 croatia_midfielder <- c("Luka Modrić", "Ivan Perišić", "Mateo Kovačić", "Marcelo Brozović","Ivan Rakitić", "Milan Badelj", "Filip Bradarić")
 croatia_defender <- c("Domagoj Vida", "Dejan Lovren", "Šime Vrsaljko", "Duje Ćaleta-Car", "Ivan Strinić", "Josip Pivarić", "Tin Jedvaj", "Vedran Ćorluka")
 croatia_forward <- c("Ante Rebić", "Andrej Kramarić", "Marko Pjaca", "Mario Mandžukić")
@@ -154,6 +156,7 @@ croatia_goalkeeper <- c("Danijel Subašić")
 ```
 
 ```{r}
+# create frequency tables for passes sent and received by France and Croatia in the final
 france_final_passes_from <- table(france_final[, 1])
 france_final_passes_to <- table(france_final[, 2])
 
