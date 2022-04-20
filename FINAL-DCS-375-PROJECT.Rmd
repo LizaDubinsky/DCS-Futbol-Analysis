@@ -55,7 +55,7 @@ write.csv(france_argentina_round, "france_argentina_round.csv", row.names = FALS
 ```{r france-final-object}
 
 # clean the data frame to only include passes from france and croatia final
-# reading in csv so that we dont have to re-run top part in case of a prematrue change to players.
+# reading in csv so that we dont have to re-run top part in case of a premature change to players
 team_name_france_croatia_final <-  read.csv("france_croatia_final.csv")
 
 team_name_france_croatia_final <- subset(team_name_france_croatia_final, team.name == c("France", "Croatia"))
@@ -84,8 +84,6 @@ france_only_final <- subset(france_only_final, pass.recipient.name != "Florian T
 
 france_only_final <- subset(france_only_final, player.name != "Djibril Sidibé")
 france_only_final <- subset(france_only_final, pass.recipient.name != "Djibril Sidibé")
-
-
 
 
 croatia_only_final <- subset(team_name_france_croatia_final, team.name == "Croatia")
@@ -156,61 +154,6 @@ croatia_goalkeeper <- c("Danijel Subašić")
 ```
 
 ```{r}
-V(france_final.g)[V(france_final.g)$name %in% france_midfielder]$color <- "#440154"
-V(france_final.g)[V(france_final.g)$name %in% france_defender]$color <-"#31688e"
-V(france_final.g)[V(france_final.g)$name %in% france_forward]$color <- "#35b779"
-V(france_final.g)[V(france_final.g)$name %in% france_goalkeeper]$color <- "#fde725"
-
-V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_midfielder]$color <- "#440154"
-V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_defender]$color <-"#31688e"
-V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_forward]$color <- "#35b779"
-V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_goalkeeper]$color <- "#fde725"
-```
-
-
-```{r}
-plot(france_final.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
-plot(croatia_final.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
-```
-
-```{r}
-png(file="france_final.png", width=1000, height=1000)
-par(bg="transparent")
-plot(france_final.g, vertex.size = 20, vertex.label.cex = 1, vertex.label.color = "white")
-dev.off()
-
-```
-
-
-```{r}
-
-soccer_png <- image_read("soccer_fil.png")
-france_png <- image_read("france_final.png")
-```
-
-
-```{r}
-# so we dont have to re-read images from above
-france_pgn1 <- france_png
-soccer_field <-soccer_png
-# scaling the soccer_field to 1000 in height and having it without a background 
-#soccer_field <- image_scale(image_background(soccer_field, "none"), "x1000")
-
-#scaling france network of passes image to 1000 height
-france_pgn1 <- image_scale(france_pgn1, "x1000")
-#creating a composite of both images and moving the France network using offset to the right and down
-# scaling the soccer field to 1000 in height 
-final_image <- image_composite(image_scale(soccer_field, "x1000"), france_pgn1, offset = "+500+50")
-
-```
-
-```{r}
-#exporting image to folder 
-image_write(final_image,path = "final_field_france.png", format = "png")
-```
-
-
-```{r}
 france_final_passes_from <- table(france_final[, 1])
 france_final_passes_to <- table(france_final[, 2])
 
@@ -218,31 +161,108 @@ croatia_final_passes_from <- table(croatia_final[, 1])
 croatia_final_passes_to <- table(croatia_final[, 2])
 ```
 
-
-
-```{r}
-#france_final_positions_orered <- c()
-france_final_from_ordered <- sort(france_final_passes_from, decreasing = TRUE)
+```{r france-final-passes-to-barplot}
+france_final_to_ordered <- sort(france_final_passes_to, decreasing = TRUE)
 par(mar=c(11,4,4,4)) # Increase margin size
-barplot(france_final_from_ordered,las=2, cex.names = 0.5)
+barplot(france_final_to_ordered,las=2, cex.names = 0.5, col = c("#31688e", "#440154", "#440154", "#35b779", "#35b779", "#31688e", "#31688e", "#31688e", "#440154", "#35b779", "#440154", "#440154", "#fde725", "#35b779"),ylab = "Number of Passes Received", main = "Passes Received in the 2018 World Cup Final (France)")
 
 ```
 
-N''Golo Kanté (midfielder)
-Benjamin Pavard
-Raphaël Varane
-Paul Pogba (midfielder)
-Antoine Griezmann
-Samuel Yves Umtiti
-Lucas Hernández Pi
-Blaise Matuidi (midfielder)
-Kylian Mbappé Lottin
-Corentin Tolisso (midfielder)
-Olivier Giroud
-Hugo Lloris
-Steven N''Kemboanza Mike Christopher Nzonzi (midfielder)
-Nabil Fekir
+```{r france-final-passes-from-barplot}
+france_final_from_ordered <- sort(france_final_passes_from, decreasing = TRUE)
+par(mar=c(11,4,4,4)) # Increase margin size
+barplot(france_final_from_ordered,las=2, cex.names = 0.5, col = c("#440154", "#31688e", "#31688e", "#440154", "#35b779", "#31688e", "#31688e", "#440154", "#35b779", "#440154", "#35b779",  "#fde725", "#440154", "#35b779"), ylab = "Number of Passes Sent", main = "Passes Sent in the 2018 World Cup Final (France)")
 
-france_defender <- c("Benjamin Pavard", "Samuel Yves Umtiti", "Raphaël Varane", "Lucas Hernández Pi", "Presnel Kimpembe", "Djibril Sidibé", "Benjamin Mendy")
-france_forward <- c("Ousmane Dembélé", "Kylian Mbappé Lottin", "Antoine Griezmann", "Nabil Fekir", "Olivier Giroud")
-france_goalkeeper <- c("Hugo Lloris")
+```
+
+```{r croatia-final-passes-to-barplot}
+croatia_final_to_ordered <- sort(croatia_final_passes_to, decreasing = TRUE)
+par(mar=c(11,4,4,4)) # Increase margin size
+barplot(croatia_final_to_ordered,las=2, cex.names = 0.5, col = c("#440154", "#31688e", "#31688e", "#440154", "#440154", "#31688e", "#31688e", "#440154", "#35b779", "#35b779", "#35b779", "#fde725", "#35b779"), ylab = "Number of Passes Received", main = "Passes Received in the 2018 World Cup Final (Croatia)")
+
+```
+
+```{r croatia-final-passes-from-barplot}
+croatia_final_from_ordered <- sort(croatia_final_passes_from, decreasing = TRUE)
+par(mar=c(11,4,4,4)) # Increase margin size
+barplot(croatia_final_from_ordered,las=2, cex.names = 0.5, col = c("#440154", "#440154", "#31688e", "#440154", "#31688e", "#31688e", "#31688e", "#440154", "#35b779", "#fde725", "#35b779", "#35b779", "#35b779"), ylab = "Number of Passes Sent", main = "Passes Sent in the 2018 World Cup Final (Croatia)")
+
+```
+
+
+```{r color-nodes}
+
+V(france_final.g)[V(france_final.g)$name %in% france_midfielder]$color <- "#440154"
+V(france_final.g)[V(france_final.g)$name %in% france_midfielder]$shape <- "square"
+V(france_final.g)[V(france_final.g)$name %in% france_defender]$color <-"#31688e"
+V(france_final.g)[V(france_final.g)$name %in% france_defender]$shape <- "circle"
+V(france_final.g)[V(france_final.g)$name %in% france_forward]$color <- "#35b779"
+V(france_final.g)[V(france_final.g)$name %in% france_forward]$shape <- "rectangle"
+V(france_final.g)[V(france_final.g)$name %in% france_goalkeeper]$color <- "#fde725"
+V(france_final.g)[V(france_final.g)$name %in% france_goalkeeper]$shape <- "sphere"
+
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_midfielder]$color <- "#440154"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_midfielder]$shape <- "square"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_defender]$color <-"#31688e"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_defender]$shape <- "circle"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_forward]$color <- "#35b779"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_forward]$shape <- "rectangle"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_goalkeeper]$color <- "#fde725"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_goalkeeper]$shape <- "sphere"
+```
+
+
+```{r plot-networks}
+plot(france_final.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
+plot(croatia_final.g, vertex.size = 20, vertex.label.cex = 0.5, vertex.label.color = "black")
+```
+
+```{r}
+set.seed(11)
+png(file="france_final.png", width=1000, height=1000)
+par(bg="transparent")
+plot(france_final.g, vertex.size = 20, vertex.label.cex = 1, vertex.label.color = "white")
+dev.off()
+```
+
+```{r}
+set.seed(10)
+png(file="croatia_final.png", width=1000, height=1000)
+par(bg="transparent")
+plot(croatia_final.g, vertex.size = 20, vertex.label.cex = 1, vertex.label.color = "white")
+dev.off()
+```
+
+
+```{r}
+
+soccer_png <- image_read("soccer_fil.png")
+france_png <- image_read("france_final.png")
+croatia_png <- image_read("croatia_final.png")
+```
+
+
+```{r}
+# so we dont have to re-read images from above
+france_png1 <- france_png
+croatia_png1 <- croatia_png
+soccer_field <-soccer_png
+
+#scaling france network of passes image to 1000 height
+france_png1 <- image_scale(france_png1, "x1000")
+croatia_png1 <- image_scale(croatia_png1, "x1000")
+
+#creating a composite of both images and moving the France network using offset to the right and down
+# scaling the soccer field to 1000 in height 
+final_france_image <- image_composite(image_scale(soccer_field, "x1000"), france_png1, offset = "-500-50")
+final_croatia_image <- image_composite(image_scale(soccer_field, "x1000"), croatia_png1, offset = "+0")
+
+```
+
+```{r}
+#exporting image to folder 
+image_write(final_france_image,path = "final_field_france.png", format = "png")
+image_write(final_croatia_image,path = "final_field_croatia.png", format = "png")
+```
+
+
