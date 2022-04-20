@@ -1,7 +1,7 @@
 ---
 title: "DCS 375 Final Writeup"
 author: "Dieter Villegas, Liza Dubinsky, Quinn Macauley, Jenniflore Beaubrun"
-date: "4/19/2022"
+date: "4/20/2022"
 output: html_document
 ---
 
