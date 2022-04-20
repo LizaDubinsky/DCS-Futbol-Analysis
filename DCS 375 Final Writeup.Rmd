@@ -41,3 +41,9 @@ Filtering code for specific games, code to color nodes by position played, code 
 6. Your data (original github repository and .csv files)
 
 Original github repository (https://github.com/Dato-Futbol/passing-networks)
+
+Inserting images:
+
+[Final Field Croatia.](final_field_croatia.png)
+[Final Field France.](final_field_france.png)
+
