@@ -5,7 +5,7 @@ date: "4/20/2022"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -58,7 +58,7 @@ colnames(wc_df_official) <- c("period","timestamp","duration","possession_team.n
 
 The below code allowed us to isolate only the passing plays for our analyses, as well as create 2 datasets and write 2 .csv files for the final and semi-final games:
 
-```{r filter-write-csv, warning  = FALSE}
+```{r filter-write-csv, warning = FALSE}
 # grab only the passes
 network_passes <- subset(wc_df_official, type.name == "Pass")
 
@@ -77,7 +77,7 @@ write.csv(france_belgium_semi, "france_belgium_semi.csv", row.names = FALSE)
 
 Using these .csv files, we filtered the data further to remove any extraneous rows from other games, remove players who didn't play in either the final or semi-final, and isolate only the connected passes by removing any pass outcomes that were "Incomplete", "Out", or "Unknown". The below code is for the French team in the France-Croatia final:
 
-```{r france-final-object, warning= FALSE}
+```{r france-final-filter, warning= FALSE}
 
 # clean the data frame to only include passes from france and croatia final
 # reading in csv so that we dont have to re-run top part in case of a premature change to players
@@ -94,13 +94,32 @@ france_only_final <- subset(france_only_final, pass.recipient.name != "Presnel K
 
 france_only_final <- subset(france_only_final, player.name != "Thomas Lemar")
 france_only_final <- subset(france_only_final, pass.recipient.name != "Thomas Lemar")
+```
 
+```{r, include = FALSE}
+france_only_final <- subset(france_only_final, player.name != "Ousmane Dembélé")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Ousmane Dembélé")
+
+france_only_final <- subset(france_only_final, player.name != "Benjamin Mendy")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Benjamin Mendy")
+
+france_only_final <- subset(france_only_final, player.name != "Benjamin Mendy")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Benjamin Mendy")
+	
+france_only_final <- subset(france_only_final, player.name != "Florian Thauvin")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Florian Thauvin")
+
+france_only_final <- subset(france_only_final, player.name != "Djibril Sidibé")
+france_only_final <- subset(france_only_final, pass.recipient.name != "Djibril Sidibé")
+```
+
+```{r, warning = FALSE}
 # construct dataset for connected passes only 
 connected_pass_france_final <- subset(france_only_final, is.na(pass.outcome.name))
 
 ```
 
-```{r, include = FALSE}
+```{r croatia-network-object, include = FALSE}
 
 croatia_only_final <- subset(team_name_france_croatia_final, team.name == "Croatia")
 croatia_only_final <- subset(croatia_only_final, player.name  != "Lovre Kalinić")
@@ -141,12 +160,86 @@ colnames(croatia_final) <- c("from", "to")
 croatia_final.g <- graph.edgelist(croatia_final, directed = TRUE) # makes a graph object
 ```
 
+```{r semi-network-objects, include = FALSE}
+
+# read in csv so that we don't have to re-run top part in case of a premature change to players.
+france_belgium_semi <- read.csv("france_belgium_semi.csv")
+
+# clean the data frame to only include passes from france and croatia final
+team_name_france_belgium_semi <- subset(france_belgium_semi, team.name == c("France", "Belgium"))
+
+france_only_semi <- subset(team_name_france_belgium_semi, team.name == "France")
+france_only_semi <- subset(france_only_semi, player.name != "Steve Mandanda")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Steve Mandanda")
+
+france_only_semi <- subset(france_only_semi, player.name != "Thomas Lemar")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Thomas Lemar")
+
+france_only_semi <- subset(france_only_semi, player.name != "Steven N''Kemboanza Mike Christopher Nzonzi")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Steven N''Kemboanza Mike Christopher Nzonzi")
+
+france_only_semi <- subset(france_only_semi, player.name != "Presnel Kimpembe")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Presnel Kimpembe")
+
+france_only_semi <- subset(france_only_semi, player.name != "Ousmane Dembélé")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Ousmane Dembélé")
+
+france_only_semi <- subset(france_only_semi, player.name != "Nabil Fekir")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Nabil Fekir")
+
+france_only_semi <- subset(france_only_semi, player.name != "Florian Thauvin")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Florian Thauvin")
+
+france_only_semi <- subset(france_only_semi, player.name != "Benjamin Mendy")
+france_only_semi <- subset(france_only_semi, pass.recipient.name != "Benjamin Mendy")
+
+belgium_only_semi <- subset(team_name_france_belgium_semi, team.name == "Belgium")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Thomas Vermaelen")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Thomas Vermaelen")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Dries Mertens")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Dries Mertens")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Thorgan Hazard")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Thorgan Hazard")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Youri Tielemans")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Youri Tielemans")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Adnan Januzaj")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Adnan Januzaj")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Anga Dedryck Boyata")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Anga Dedryck Boyata")
+
+belgium_only_semi <- subset(belgium_only_semi, player.name != "Leander Dendoncker")
+belgium_only_semi <- subset(belgium_only_semi, pass.recipient.name != "Leander Dendoncker")
+
+
+# construct dataset for connected passes only 
+connected_pass_france_semi <- subset(france_only_semi, is.na(pass.outcome.name))
+connected_pass_belgium_semi <- subset(belgium_only_semi, is.na(pass.outcome.name))
+
+# create an edgelist of passes to and from players
+france_semi <- cbind(connected_pass_france_semi$player.name, connected_pass_france_semi$pass.recipient.name)
+
+belgium_semi <- cbind(connected_pass_belgium_semi$player.name, connected_pass_belgium_semi$pass.recipient.name)
+
+# name these columns
+colnames(france_semi) <- c("from", "to")
+colnames(belgium_semi) <- c("from", "to")
+
+# create a graph object for network analysis
+france_semi.g <- graph.edgelist(france_semi, directed = TRUE) # makes a graph object
+belgium_semi.g <- graph.edgelist(belgium_semi, directed = TRUE) # makes a graph object
+```
 
 #### Creating Network Objects
 
 We then used the player name and pass recipient name columns of our datasets to create an edgelist and then a network object of connected passes to and from players on each team in both games. The below code is for the French team in the France-Croatia final:
 
-```{r}
+```{r, warning = FALSE}
 # create an edgelist of passes to and from players
 france_final <- cbind(connected_pass_france_final$player.name, connected_pass_france_final$pass.recipient.name)
 
@@ -162,7 +255,7 @@ france_final.g <- graph.edgelist(france_final, directed = TRUE) # makes a graph 
 
 To create accessible network visualizations, we used shape and color to distinguish between the positions played by player in each team across both games. The below code is for the French team in the France-Croatia final:
 
-```{r identify-france-players}
+```{r identify-france-players, warning = FALSE}
 
 france_midfielder <- c("Corentin Tolisso", "Paul Pogba", "N''Golo Kanté", "Blaise Matuidi", "Steven N''Kemboanza Mike Christopher Nzonzi", "Thomas Lemar", "Florian Thauvin")
 france_defender <- c("Benjamin Pavard", "Samuel Yves Umtiti", "Raphaël Varane", "Lucas Hernández Pi", "Presnel Kimpembe", "Djibril Sidibé", "Benjamin Mendy")
@@ -170,7 +263,27 @@ france_forward <- c("Ousmane Dembélé", "Kylian Mbappé Lottin", "Antoine Griez
 france_goalkeeper <- c("Hugo Lloris")
 ```
 
-```{r color-nodes}
+```{r identify-croatia-players, include = FALSE}
+
+# player positions on team Croatia in the final
+croatia_midfielder <- c("Luka Modrić", "Ivan Perišić", "Mateo Kovačić", "Marcelo Brozović","Ivan Rakitić", "Milan Badelj", "Filip Bradarić")
+croatia_defender <- c("Domagoj Vida", "Dejan Lovren", "Šime Vrsaljko", "Duje Ćaleta-Car", "Ivan Strinić", "Josip Pivarić", "Tin Jedvaj", "Vedran Ćorluka")
+croatia_forward <- c("Ante Rebić", "Andrej Kramarić", "Marko Pjaca", "Mario Mandžukić")
+croatia_goalkeeper <- c("Danijel Subašić")
+
+
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_midfielder]$color <- "#440154"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_midfielder]$shape <- "square"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_defender]$color <-"#31688e"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_defender]$shape <- "circle"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_forward]$color <- "#35b779"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_forward]$shape <- "rectangle"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_goalkeeper]$color <- "#fde725"
+V(croatia_final.g)[V(croatia_final.g)$name %in% croatia_goalkeeper]$shape <- "sphere"
+```
+
+
+```{r color-nodes, warning = FALSE}
 
 V(france_final.g)[V(france_final.g)$name %in% france_midfielder]$color <- "#440154"
 V(france_final.g)[V(france_final.g)$name %in% france_midfielder]$shape <- "square"
@@ -184,7 +297,18 @@ V(france_final.g)[V(france_final.g)$name %in% france_goalkeeper]$shape <- "spher
 
 To save the layouts for our network visualizations, we set a seed for each team in each game. Then, using a soccer field background and our network visualization, we scaled and offset the network to create a composite of both images. Below is the code for both France and Croatia in the France-Croatia final:
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
+
+set.seed(11)
+png(file="france_final.png", width=1000, height=1000)
+par(bg="transparent")
+plot(france_final.g, vertex.size = 20, vertex.label.cex = 1, vertex.label.color = "white")
+
+set.seed(10)
+png(file="croatia_final.png", width=1000, height=1000)
+par(bg="transparent")
+plot(croatia_final.g, vertex.size = 20, vertex.label.cex = 1, vertex.label.color = "white")
+dev.off()
 
 soccer_png <- image_read("soccer_fil.png")
 france_png <- image_read("france_final.png")
@@ -206,26 +330,107 @@ final_croatia_image <- image_composite(image_scale(soccer_field, "x1000"), croat
 
 ```
 
-```{r plot-soccer-field-networks}
-plot(final_france_image)
-plot(final_croatia_image)
+```{r, include = FALSE}
+#importing both a png image of a soccer field and the france network of passes image created above
+soccer_png <- image_read("soccer_fil.png")
+france_semi_png <- image_read("france_semi.png")
+
+# so we dont have to re-read images from above
+france_semi_png1 <- france_semi_png
+soccer_field <-soccer_png
+
+#scaling france network of passes image to 1000 height
+france_semi_png1 <- image_scale(france_semi_png1, "x1000")
+#creating a composite of both images and moving the France network using offset to the right and down
+# scaling the soccer field to 1000 in height 
+semi_france_image <- image_composite(image_scale(soccer_field, "x1000"), france_semi_png1, offset = "+500+0")
+
 ```
 
- (include code snippets and interpretation)
+```{r plot-soccer-field-networks, warning = FALSE}
+plot(final_france_image)
+plot(final_croatia_image)
+plot(semi_france_image)
+```
 
-[Final Field Croatia.](final_field_croatia.png)
+ (include interpretation)
 
-[Final Field France.](final_field_france.png)
 
 #### Centrality and Betweenness 
 
-Code and calculations for exploratory statistics (include code snippets and interpretation)
+##### Centrality and Betweenness France Final
+
+```{r, warning = FALSE}
+# betweenness for france final
+btwn.team <- betweenness(france_final.g)
+names(btwn.team) <- V(france_final.g)$name
+ind <- order(-btwn.team)
+btwn.team[ind][1:14]
+``` 
+
+```{r, warning = FALSE}
+# centrality for france final
+cent.eig <- evcent(france_final.g)
+names(cent.eig$vector) <- V(france_final.g)$name
+ind <- order(-cent.eig$vector)
+cent.eig$vector[ind][1:14]
+```
+
+```{r, warning = FALSE}
+# betweenness for croatia final
+btwn.team <- betweenness(croatia_final.g)
+names(btwn.team) <- V(croatia_final.g)$name
+ind <- order(-btwn.team)
+btwn.team[ind][1:13]
+``` 
+
+```{r, warning = FALSE}
+# centrality for croatia final
+cent.eig <- evcent(croatia_final.g)
+names(cent.eig$vector) <- V(croatia_final.g)$name
+ind <- order(-cent.eig$vector)
+cent.eig$vector[ind][1:13]
+```
+
+```{r, warning = FALSE}
+# betweenness for france semi 
+btwn.team <- betweenness(france_semi.g)
+names(btwn.team) <- V(france_semi.g)$name
+ind <- order(-btwn.team)
+btwn.team[ind][1:13]
+``` 
+
+```{r, warning = FALSE}
+# centrality for france semi 
+cent.eig <- evcent(france_semi.g)
+names(cent.eig$vector) <- V(france_semi.g)$name
+ind <- order(-cent.eig$vector)
+cent.eig$vector[ind][1:13]
+```
+
+```{r, warning = FALSE}
+# betweenness for belgium semi
+btwn.team <- betweenness(belgium_semi.g)
+names(btwn.team) <- V(belgium_semi.g)$name
+ind <- order(-btwn.team)
+btwn.team[ind][1:14]
+``` 
+
+```{r, warning = FALSE}
+# centrality for belgium semi
+cent.eig <- evcent(belgium_semi.g)
+names(cent.eig$vector) <- V(belgium_semi.g)$name
+ind <- order(-cent.eig$vector)
+cent.eig$vector[ind][1:14]
+```
+
+ (include interpretation using this article: (https://arxiv.org/pdf/1206.6904.pdf))
 
 #### Modeling 
 
 To explore the distribution of sent and received passes on each team in both games, we first constructed frequency tables of the number of passes sent and received per player.
 
-```{r create-frequency-tables, include = FALSE}
+```{r create-frequency-tables}
 france_final_passes_from <- table(france_final[, 1])
 france_final_passes_to <- table(france_final[, 2])
 
@@ -233,23 +438,32 @@ croatia_final_passes_from <- table(croatia_final[, 1])
 croatia_final_passes_to <- table(croatia_final[, 2])
 ```
 
-where the color of each bar corresponds to the player's position.
+Then, we constructed bar plots, where the color of each bar corresponds to the player's position:
 
+```{r}
+france_final_to_ordered <- sort(france_final_passes_to, decreasing = TRUE)
+par(mar=c(11,4,4,4)) # Increase margin size
+barplot(france_final_to_ordered,las=2, cex.names = 0.5, col = c("#31688e", "#440154", "#440154", "#35b779", "#35b779", "#31688e", "#31688e", "#31688e", "#440154", "#35b779", "#440154", "#440154", "#fde725", "#35b779"),ylab = "Number of Passes Received", main = "Passes Received in the 2018 World Cup Final (France)")
 
-
-Creating barplots based on position, fit power law distribution and calculate p-values (include code snippets and interpretation)
-
-[Final France Received Passes.](final_france_received_passes.png)
-
-[Final France Sent Passes.](final_france_sent_passes.png)
+france_final_from_ordered <- sort(france_final_passes_from, decreasing = TRUE)
+par(mar=c(11,4,4,4)) # Increase margin size
+barplot(france_final_from_ordered,las=2, cex.names = 0.5, col = c("#440154", "#31688e", "#31688e", "#440154", "#35b779", "#31688e", "#31688e", "#440154", "#35b779", "#440154", "#35b779",  "#fde725", "#440154", "#35b779"), ylab = "Number of Passes Sent", main = "Passes Sent in the 2018 World Cup Final (France)")
+```
 
 **Power Law Fit for the Passes and Receptions by the French Team in the Final:** 
 
 Using a frequency table for the number of passes and receptions made by the French team in the 2018 World Cup final, we were able to run a power law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 4.222 and 6.188 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the passes made by each of the players on the French team are less skewed and the receptions are more skewed. If we look at the p-values, we see that the passes have a p-value of 0.954, which implies that it has a relatively high fit for the power law; the p-value for the receptions is 0.948, which also implies that the receptions by players have a relatively high fit for the power law. We can suggest that, in the final, the French team was attempting to spread out their passes a little bit because the Croatian players were heavily defending their star players, which lead to a lower fit for the receptions. It also seems like the passes would be made by those in the midfield who were “running” whatever “play” the French team was trying to execute so that they could score a goal, which suggests that the French team was very organized, which makes sense because they were the veteran team. So, the passers have a higher fit for the power law, but the receivers do not have as high of a fit because they are trying to evade the Croatian defenders guarding their star players who would be the ones that could potentially score the most goals.
 
-[Final Croatia Received Passes.](final_croatia_received_passes.png)
 
-[Final Croatia Sent Passes.](final_croatia_sent_passes.png)
+```{r}
+croatia_final_to_ordered <- sort(croatia_final_passes_to, decreasing = TRUE)
+par(mar=c(11,4,4,4)) # Increase margin size
+barplot(croatia_final_to_ordered,las=2, cex.names = 0.5, col = c("#440154", "#31688e", "#31688e", "#440154", "#440154", "#31688e", "#31688e", "#440154", "#35b779", "#35b779", "#35b779", "#fde725", "#35b779"), ylab = "Number of Passes Received", main = "Passes Received in the 2018 World Cup Final (Croatia)")
+
+croatia_final_from_ordered <- sort(croatia_final_passes_from, decreasing = TRUE)
+par(mar=c(11,4,4,4)) # Increase margin size
+barplot(croatia_final_from_ordered,las=2, cex.names = 0.5, col = c("#440154", "#440154", "#31688e", "#440154", "#31688e", "#31688e", "#31688e", "#440154", "#35b779", "#fde725", "#35b779", "#35b779", "#35b779"), ylab = "Number of Passes Sent", main = "Passes Sent in the 2018 World Cup Final (Croatia)")
+```
 
 **Power Law Fit for the Passes and Receptions by the Croatian Team in the Final:** 
 
@@ -264,6 +478,8 @@ Using a frequency table for the number of passes and receptions made by the Fren
 
 Using a frequency table for the number of passes and receptions made by the Belgian team in the 2018 World Cup semifinal against France, we were able to run a power law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 7.322 and 7.591 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the passes and receptions made by each of the players on the Belgian team are skewed at almost the same amount, but this alpha is very high, so the data we collected is very skewed. If we look at the p-values, we see that the passes have a p-value of 0.999, which implies that it has a very high fit for the power law; the p-value for the receptions is also 0.999, which again implies that the receptions by players have a very high fit for the power law. We can suggest that, in the semifinal, the star players on the Belgian team had the vast majority of control of the ball. This would lead us to believe that the Belgian team is not as deep in terms of talent, and that they were giving it to their star players because this was a very tough game for them. The star players on the Belgian team needed to have the ball because they possessed the highest ability to score a goal against the veteran French team. Belgium did lose this game, but the score was 1-0, which suggests that both teams were playing very hard and had similar strategies.
 
+ (include code snippets and interpretation)
+ 
 #### Limitations and Future Work
 
 standardize by playing time, calculations like passes receieved and sent might look different if we have passes/min 

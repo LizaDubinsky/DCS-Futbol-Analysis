@@ -232,7 +232,7 @@ deg <- degree(france_semi.g, mode="all")
 
 ## Creating Barplots for the Semifinal depicting the number of passes sent and received from each player
 ### France semi-final passes sent from each player 
->>>>>>> 45f586562ebd56b47b60f760efc45c8b9d9951a1
+
 ```{r}
 #passes sent from each player data frame creation
 from_table <-table(france_semi[,1])
