@@ -544,7 +544,7 @@ df_to_final_france_received_ordered <- df_to_final_france_received[order(-df_to_
 par(mar=c(11,4,4,4)) # Increase margin size
 ```
 
-```{r france-semi-sent-passes-plot}
+```{r france-final-received-passes-plot, warning = FALSE}
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
 barplot(df_to_final_france_received_ordered$Freq,decreasing = TRUE, names.arg = df_to_final_france_received_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_final_france_received_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_final_france_received_ordered$Position), args.legend = list("topright", fill = mycolors ),  main = "Passes Received in the 2018 World Cup Final (France)")
 
@@ -654,7 +654,7 @@ par(mar=c(11,4,4,4)) # Increase margin size
 
 ```{r croatia-final-received-passes-plot, warning = FALSE}
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
-barplot(df_to_final_croatia_receieved_ordered$Freq,decreasing = TRUE, names.arg = df_to_final_croatia_receieved_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Final (Croatia)")
+barplot(df_to_final_croatia_receieved_ordered$Freq,decreasing = TRUE, names.arg = df_to_final_croatia_receieved_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_final_croatia_receieved_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_final_croatia_receieved_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Final (Croatia)")
 
 ```
 
@@ -668,7 +668,7 @@ Using a similar frequency table, like the one used above, for the number of pass
 
 #passes sent from each player data frame creation
 from_table_france_semi <-table(france_semi[,1])
-df_from_semi_france_sent <- as.data.frame(from_table)
+df_from_semi_france_sent <- as.data.frame(from_table_france_semi)
 
 ##having extra df unchanged df just in case for future use
 extra_df_from_semi_france_sent<- df_from_semi_france_sent
@@ -760,7 +760,7 @@ df_to_semi_france_received_ordered <- df_to_semi_france_received[order(-df_to_se
 par(mar=c(11,4,4,4)) # Increase margin size
 ```
 
-```{r france-semi-sent-passes-plot}
+```{r france-semi-received-passes-plot, warning = FALSE}
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
 barplot(df_to_semi_france_received_ordered$Freq,decreasing = TRUE, names.arg = df_to_semi_france_received_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_semi_france_received_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_france_received_ordered$Position), args.legend = list("topright", fill = mycolors ),  main = "Passes Received in the 2018 World Cup Semi-Final (France)")
 
@@ -816,7 +816,7 @@ df_from_semi_bel_ordered <- df_from_semi_bel[order(-df_from_semi_bel$Freq),,]
 par(mar=c(11,4,4,4)) # Increase margin size
 ```
 
-```{r belgium-semi-sent-passes-plot}
+```{r belgium-semi-sent-passes-plot, warning = FALSE}
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
 barplot(df_from_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_bel_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_from_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Semi-Final (Belgium)")
 
