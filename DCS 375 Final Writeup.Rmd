@@ -22,7 +22,7 @@ library(magick)
 
 ### Introduction 
 
-In this project, we used Statsbomb event data from the [Dato-Futbol/passing-networks GitHub repository](https://github.com/Dato-Futbol/passing-networks) to analyze the final and semi-final games in the 2018 World Cup. Motivated by scholarly articles on constructing and analyzing passing networks, we used network analysis to explore the following questions:
+In this project, we used Statsbomb event data from the [Dato-Futbol/passing-networks GitHub repository](https://github.com/Dato-Futbol/passing-networks) to analyze the final and semifinal games in the 2018 World Cup. Motivated by scholarly articles on constructing and analyzing passing networks, we used network analysis to explore the following questions:
 
 1. What players are central to the directed networks of the France-Croatia final and France-Belgium semi-final? What positions do they play?
 2. How are the number of passes allocated across players on each team? 
@@ -254,7 +254,7 @@ france_final.g <- graph.edgelist(france_final, directed = TRUE) # makes a graph 
 
 #### Visualizing Directed Networks
 
-To create accessible network visualizations, we used shape and color to distinguish between the positions played by player in each team across both games. The goalkeeper is a yellow sphere, the defenders are blue circles, the midfielders are purple squares, and the forwards are green rectangles. The below code assigns players on the French team to different positions: 
+To create accessible network visualizations, we used shape and color to distinguish between the positions played by player in each team across both games. The goalkeeper is a yellow sphere, the defenders are blue circles, the midfielders are purple squares, and the forwards are green rectangles. The below code assigns players on the French team to different positions and defines the color and shape of each player node based on their position:
 
 ```{r identify-france-players, warning = FALSE}
 
@@ -442,75 +442,104 @@ plot(final_croatia_image)
  (include interpretation)
 
 
-#### Centrality and Betweenness 
+#### Betweenness Centrality and Closeness Centrality Statistics for Teams in the 2018 World Cup Semifinal and Final
 
-##### Centrality and Betweenness France Final
+From UNGAR Chapter 7: Actor Prominence, we will use measures of centrality to determine the prominence of players on the teams in the 2018 World Cup semifinal and final. We will use closeness centrality which measures how close a given node is to other nodes in the network as well as betweenness centrality which measures to what extent a given node is positioned "between" pairs of other nodes in the network.
 
-```{r, warning = FALSE}
-# betweenness for france final
-btwn.team <- betweenness(france_final.g)
-names(btwn.team) <- V(france_final.g)$name
-ind <- order(-btwn.team)
-btwn.team[ind][1:14]
-``` 
+To determine which players were central to the directed networks of the France-Croatia final and France-Belgium semifinal, we referred to the 2012 article "A network theory analysis of football strategies" by Javier López Peña and Hugo Touchette. In their article, they use closeness centrality and betweenness centrality to measure a player's contribution to the team. Guided by their insights, we will use betweenness centrality to inform the extent to which ball-flow between the rest of the team depends on each player and closeness centrality to inform how well-connected each player. 
 
-```{r, warning = FALSE}
-# centrality for france final
-cent.eig <- evcent(france_final.g)
-names(cent.eig$vector) <- V(france_final.g)$name
-ind <- order(-cent.eig$vector)
-cent.eig$vector[ind][1:14]
-```
+##### Betweenness Centrality and Closeness Centrality for French Players in the Semifinal
 
-```{r, warning = FALSE}
-# betweenness for croatia final
-btwn.team <- betweenness(croatia_final.g)
-names(btwn.team) <- V(croatia_final.g)$name
-ind <- order(-btwn.team)
-btwn.team[ind][1:13]
-``` 
-
-```{r, warning = FALSE}
-# centrality for croatia final
-cent.eig <- evcent(croatia_final.g)
-names(cent.eig$vector) <- V(croatia_final.g)$name
-ind <- order(-cent.eig$vector)
-cent.eig$vector[ind][1:13]
-```
-
-```{r, warning = FALSE}
+```{r france-semi-betweenness, warning = FALSE}
 # betweenness for france semi 
-btwn.team <- betweenness(france_semi.g)
-names(btwn.team) <- V(france_semi.g)$name
-ind <- order(-btwn.team)
-btwn.team[ind][1:13]
+btwn.france_semi <- betweenness(france_semi.g)
+names(btwn.france_semi) <- V(france_semi.g)$name
+ind <- order(-btwn.france_semi)
+btwn.france_semi[ind][1:13]
 ``` 
 
-```{r, warning = FALSE}
-# centrality for france semi 
-cent.eig <- evcent(france_semi.g)
-names(cent.eig$vector) <- V(france_semi.g)$name
-ind <- order(-cent.eig$vector)
-cent.eig$vector[ind][1:13]
+We observe here that Kanté, Pogba, and Varane have the largest betweenness centrality scores among French players in the semifinal with scores of 12.027, 7.544, and 5.650 respectively. This means that the impact of removing these three players from the 2018 World Cup semifinal would have a far greater effect than removing players like Sidibé with a betweenness centrality score of less than 0.1. These top three players are two midfielders and a defender for France. Further, from the large variation in betweenness scores, we see that there is a high dependence on a few important players in the French passing network for the France-Belgium semifinal.
+
+```{r france-semi-closeness}
+closeness.france_semi <- closeness(france_semi.g)
+names(closeness.france_semi) <- V(france_semi.g)$name
+ind <- order(-closeness.france_semi)
+closeness.france_semi[ind][1:13]
 ```
 
-```{r, warning = FALSE}
+From our closeness centrality calculation, we see that Kanté, Griezmann, and Varane have the largest closeness centrality scores among French players in the semifinal with scores of 0.083, 0.077, and 0.071 respectively. Since closeness centrality is calculated out of 1, these are still very small scores that measure how well-connected a player is based on how easy it is for other players to reach them. These top three players are a midfielder, forward, and defender respectively.
+
+From these two calculations of centrality, midfielder N''Golo Kanté is clearly the most central to the passing network of the French team in the 2018 World Cup semifinal, followed closely by other key players including defender Varane, midfielder Pogba, and forward Griezemann. 
+
+
+##### Betweenness Centrality and Closeness Centrality for Belgian Players in the Semifinal
+
+```{r belgium-semi-betweenness, warning = FALSE}
 # betweenness for belgium semi
-btwn.team <- betweenness(belgium_semi.g)
-names(btwn.team) <- V(belgium_semi.g)$name
-ind <- order(-btwn.team)
-btwn.team[ind][1:14]
+btwn.belgium_semi <- betweenness(belgium_semi.g)
+names(btwn.belgium_semi) <- V(belgium_semi.g)$name
+ind <- order(-btwn.belgium_semi)
+btwn.belgium_semi[ind][1:14]
 ``` 
 
-```{r, warning = FALSE}
-# centrality for belgium semi
-cent.eig <- evcent(belgium_semi.g)
-names(cent.eig$vector) <- V(belgium_semi.g)$name
-ind <- order(-cent.eig$vector)
-cent.eig$vector[ind][1:14]
+We observe here that Hazard, Meunier, and Witsel have the largest betweenness centrality scores among Belgian players in the semifinal with scores of 9.520, 8.983, and 8.779 respectively. This means that the impact of removing these three players from the 2018 World Cup semifinal would have a far greater effect than removing players like Tunga with a betweenness centrality score of less than 0.3. These top three players are a forward, a defender, and a midfielder respectfully. Further, from the large variation in betweenness scores, we see that there is a high dependence on a few important players in the Belgian passing network for the France-Belgium semifinal.
+
+```{r belgium_semi-closeness}
+closeness.belgium_semi <- closeness(belgium_semi.g)
+names(closeness.belgium_semi) <- V(belgium_semi.g)$name
+ind <- order(-closeness.belgium_semi)
+closeness.belgium_semi[ind][1:14]
 ```
 
- (include interpretation using this article: (https://arxiv.org/pdf/1206.6904.pdf))
+From our closeness centrality calculation, we see that Witsel, De Bruyne, and Hazard have the largest closeness centrality scores among Belgian players in the semifinal with scores of 0.071, 0.067, and 0.067 respectively. Since closeness centrality is calculated out of 1, these are still very small scores that measure how well-connected a player is based on how easy it is for other players to reach them. These top three players are two midfielders and a forward respectively.
+
+From these two calculations of centrality, forward Eden Hazard and midfielder Axel Witsel are the most central to the passing network of the Belgian team in the 2018 World Cup semifinal, followed closely by other key players including midfielder De Bruyne. 
+
+##### Betweenness Centrality and Closeness Centrality for French Players in the Final
+
+```{r france-final-betweenness, warning = FALSE}
+# betweenness for france final
+btwn.france_final <- betweenness(france_final.g)
+names(btwn.france_final) <- V(france_final.g)$name
+ind <- order(-btwn.france_final)
+btwn.france_final[ind][1:14]
+``` 
+
+We observe here that Pavard, Kanté, and Pogba have the largest betweenness centrality scores among French players in the final with scores of 16.599, 9.316, and 5.041 respectively. This means that the impact of removing these three players from the 2018 World Cup final would have a far greater effect than removing players like Fekir with a betweenness centrality score of less than 0.4. These top three players are a defender and two midfielders respectfully. Further, from the large variation in betweenness scores, we see that there is a high dependence on a few important players in the French passing network for the France-Croatia final.
+
+```{r france-final-closeness}
+closeness.france_final <- closeness(france_final.g)
+names(closeness.france_final) <- V(france_final.g)$name
+ind <- order(-closeness.france_final)
+closeness.france_final[ind][1:14]
+```
+
+From our closeness centrality calculation, we see that Kanté, Pogba, and Pavard have the largest closeness centrality scores among French players in the final with scores of 0.077, 0.071, and 0.067 respectively. Since closeness centrality is calculated out of 1, these are still very small scores that measure how well-connected a player is based on how easy it is for other players to reach them. These top three players are two midfielders and a defender respectively.
+
+From these two calculations of centrality, midfielders N''Golo Kanté and Paul Pogba as well as defender Benjamin Pavard are the most central to the passing network of the French team in the 2018 World Cup final, followed closely by other key players including defenders Umtiti, Varane, and Pi as well as forward Griezmann. 
+
+##### Betweenness Centrality and Closeness Centrality for Croatian Players in the Final
+
+```{r croatia-final-betweenness, warning = FALSE}
+# betweenness for croatia final
+btwn.croatia_final <- betweenness(croatia_final.g)
+names(btwn.croatia_final) <- V(croatia_final.g)$name
+ind <- order(-btwn.croatia_final)
+btwn.croatia_final[ind][1:13]
+``` 
+
+We observe here that Kramarić, Modrić, and Lovren have the largest betweenness centrality scores among Croatian players in the final with scores of 11.734, 10.598, and 6.624 respectively. This means that the impact of removing these three players from the 2018 World Cup final would have a far greater effect than removing players like Pjaca with a betweenness centrality score of less than 0.01. These top three players are a forward, a midfielder, and a defender respectfully. Further, from the large variation in betweenness scores, we see that there is a high dependence on a few important players in the Croatian passing network for the France-Croatia final.
+
+```{r croatia-final-closeness}
+closeness.croatia_final <- closeness(croatia_final.g)
+names(closeness.croatia_final) <- V(croatia_final.g)$name
+ind <- order(-closeness.croatia_final)
+closeness.croatia_final[ind][1:13]
+```
+
+From our closeness centrality calculation, we see that Modrić, Brozović, and Rakitić have the largest closeness centrality scores among Croatian players in the final with scores of 0.077, 0.077, and 0.071 respectively. Since closeness centrality is calculated out of 1, these are still very small scores that measure how well-connected a player is based on how easy it is for other players to reach them. These top three players are midfielders for Croatia.
+
+From these two calculations of centrality, midfielder Luka Modrić is the most central to the passing network of the Croatian team in the 2018 World Cup final, followed closely by other key players including midfielder Rakitić and defender Lovren.
 
 #### Modeling Sent and Received Passing Distributions for Teams in the 2018 World Cup Final and Semi-Final
 
@@ -1012,14 +1041,19 @@ Using a similar frequency table, like the one used above, for the number of pass
 While these passing network analyses offer insights into playing strategy and key players, there are multiple ways that these analyses may be refined or extended in the future. By standardizing by playing time, our analyses of pass distributions across teams in different 2018 World Cup games would more accurately reflect team dynamics and key player positions in sending and receiving passes on different teams. Further, by utilizing the starting and ending coordinates of passes from the [Dato-Futbol/passing-networks GitHub repository](https://github.com/Dato-Futbol/passing-networks), our passing network visualizations could be extended to create a network of player positions and accurate mappings of passes between them based on real-time coordinates data. It would even be possible to construct a heatmap of where passes occur across the field. 
 
 
-5. References to at least four pieces of scholarly writing (these should include readings from the disciplinary or domain space that your question is in, as well as network theory readings from the course)
+#### References 
+
+1. Nepusz, T., &amp; Csardi, G. (n.d.). Fit_power_law: Fitting a power-law distribution function to discrete data. RDocumentation. Retrieved April 19, 2022, from (https://www.rdocumentation.org/packages/igraph/versions/1.3.0/topics/fit_power_law)  
+2. Luke, Douglas. 2015. A User's Guide to Network Analysis in R. (https://link.springer.com/book/10.1007/978-3-319-23883-8)
+3. Peña, Javier López and Hugo Touchette. 2012. A network theory analysis of football strategies. (https://arxiv.org/pdf/1206.6904.pdf)
+
 
 1. Football passing networks using R (https://www.datofutbol.cl/passing-networks-r/)
 2. Using Network Science to Analyse Football Passing Networks: Dynamics, Space, Time, and the Multilayer Nature of the Game (https://www.frontiersin.org/articles/10.3389/fpsyg.2018.01900/full)
-3. A network theory analysis of football strategies (https://arxiv.org/pdf/1206.6904.pdf)
+
 4. Play-by-Play Network Analysis in Football (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6669815/)
 5. Player position relationships with centrality in the passing network of world cup soccer teams: Win/loss match comparisons (https://reader.elsevier.com/reader/sd/pii/S0960077920300242?token=8E57B44BFF232C5A65695EB10963EC50F09AA44F926BA77E421EA97D4C50493E29D978F1D360149CC7A674D5CF2994E8&originRegion=us-east-1&originCreation=20220405191913)
-6. Nepusz, T., &amp; Csardi, G. (n.d.). Fit_power_law: Fitting a power-law distribution function to discrete data. RDocumentation. Retrieved April 19, 2022, from (https://www.rdocumentation.org/packages/igraph/versions/1.3.0/topics/fit_power_law)  
+
 
 
 
