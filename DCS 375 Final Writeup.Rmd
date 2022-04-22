@@ -17,14 +17,14 @@ library(igraph)
 library(magick)
 ```
 
-## Final project for DCS 375 on Players in the 2018 World Cup Semi-Final and Final
+## Final project for DCS 375 on Players in the 2018 World Cup Semifinal and Final
 
 
 ### Introduction 
 
 In this project, we used Statsbomb event data from the [Dato-Futbol/passing-networks GitHub repository](https://github.com/Dato-Futbol/passing-networks) to analyze the final and semifinal games in the 2018 World Cup. Motivated by scholarly articles on constructing and analyzing passing networks, we used network analysis to explore the following questions:
 
-1. What players are central to the directed networks of the France-Croatia final and France-Belgium semi-final? What positions do they play?
+1. What players are central to the directed networks of the France-Croatia final and France-Belgium semifinal? What positions do they play?
 2. How are the number of passes allocated across players on each team? 
 
 
@@ -39,7 +39,7 @@ In the following sections, we include our methodology for our analyses followed 
 
 #### Filtering the Data 
 
-The original dataset included 227886 rows and 161 columns that covered the games of the 2018 World Cup. We decided to focus our analysis on the final and semi-final games of the 2018 World Cup, and filtered for variables concerning the teams, players, and type of play:
+The original dataset included 227886 rows and 161 columns that covered the games of the 2018 World Cup. We decided to focus our analysis on the final and semifinal games of the 2018 World Cup, and filtered for variables concerning the teams, players, and type of play:
 
 ```{r clean-data, include = FALSE}
 
@@ -56,7 +56,7 @@ wc_df_official <- as.data.frame(wc_maxtrix)
 colnames(wc_df_official) <- c("period","timestamp","duration","possession_team.name","type.name","player.name","team.name","pass.length","pass.recipient.name","pass.outcome.name","ball_receipt.outcome.name","match_id","location.x","location.y","pass.end_location.x","pass.end_location.y")
 ```
 
-The below code allowed us to isolate only the passing plays for our analyses, as well as create 2 datasets and write 2 .csv files for the final and semi-final games:
+The below code allowed us to isolate only the passing plays for our analyses, as well as create 2 datasets and write 2 .csv files for the final and semifinal games:
 
 ```{r filter-write-csv, warning = FALSE}
 # grab only the passes
@@ -75,7 +75,7 @@ write.csv(france_belgium_semi, "france_belgium_semi.csv", row.names = FALSE)
 
 ```
 
-Using these .csv files, we filtered the data further to remove any extraneous rows from other games, remove players who didn't play in either the final or semi-final, and isolate only the connected passes by removing any pass outcomes that were "Incomplete", "Out", or "Unknown". The below code is for the French team in the France-Croatia final:
+Using these .csv files, we filtered the data further to remove any extraneous rows from other games, remove players who didn't play in either the final or semifinal, and isolate only the connected passes by removing any pass outcomes that were "Incomplete", "Out", or "Unknown". The below code is for the French team in the France-Croatia final:
 
 ```{r france-final-filter, warning= FALSE}
 
@@ -284,7 +284,7 @@ croatia_goalkeeper <- c("Danijel Subašić")
 
 ```{r belgium-players, include = FALSE}
 
-# player positions on team Belgium in the semi-final
+# player positions on team Belgium in the semifinal
 belgium_midfielder <- c("Kevin De Bruyne", "Axel Witsel", "Yannick Ferreira Carrasco", "Mousa Sidi Yaya Dembélé", "Thorgan Hazard", "Nacer Chadli", "Marouane Fellaini-Bakkioui", "Youri Tielemans", "Adnan Januzaj")
 belgium_defender <- c("Thomas Meunier", "Anga Dedryck Boyata", "Jan Vertonghen", "Toby Alderweireld", "Leander Dendoncker", "Thomas Vermaelen", "Vincent Kompany")
 belgium_forward <- c("Eden Hazard", "Dries Mertens", "Romelu Lukaku Menama", "Michy Batshuayi Tunga")
@@ -415,13 +415,13 @@ semi_belgium_image <- image_composite(image_scale(soccer_field_belgium_semi, "x1
 
 ```
 
-##### France in the 2018 World Cup Semi-Final 
+##### France in the 2018 World Cup Semifinal 
 
 ```{r plot-france-semi-field-network, warning = FALSE}
 plot(semi_france_image)
 ```
 
-##### Belgium in the 2018 World Cup Semi-Final 
+##### Belgium in the 2018 World Cup Semifinal 
 
 ```{r plot-belgium-semi-field-network, warning = FALSE}
 plot(semi_belgium_image)
@@ -541,7 +541,7 @@ From our closeness centrality calculation, we see that Modrić, Brozović, and R
 
 From these two calculations of centrality, midfielder Luka Modrić is the most central to the passing network of the Croatian team in the 2018 World Cup final, followed closely by other key players including midfielder Rakitić and defender Lovren.
 
-#### Modeling Sent and Received Passing Distributions for Teams in the 2018 World Cup Final and Semi-Final
+#### Modeling Sent and Received Passing Distributions for Teams in the 2018 World Cup Final and Semifinal
 
 To explore the distribution of sent and received passes on each team in both games, we first constructed frequency tables of the number of passes sent and received per player. The below code is for the French and Croatian team in the France-Croatia final:
 
@@ -555,7 +555,7 @@ croatia_final_passes_to <- table(croatia_final[, 2])
 
 Then, we constructed bar plots, where the color of each bar corresponds to the player's position:
 
-##### France in the 2018 World Cup Semi-Final 
+##### France in the 2018 World Cup Semifinal 
 
 ```{r france-semi-sent-passes-code, include = FALSE, warning = FALSE}
 
@@ -604,7 +604,7 @@ par(mar=c(11,4,4,4)) # Increase margin size
 ```
 
 ```{r france-semi-sent-passes-plot, warning = FALSE, fig.cap = "Figure 5: Barplot of passes sent on the French team in the 2018 World Cup semifinal where most midfielders and defenders send more passes than forwards and the goalkeeper."}
-barplot(df_from_semi_france_sent_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_france_sent_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_from_semi_france_sent_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_france_sent_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Semi-Final (France)")
+barplot(df_from_semi_france_sent_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_france_sent_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_from_semi_france_sent_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_france_sent_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Semifinal (France)")
 
 ```
 
@@ -658,13 +658,13 @@ par(mar=c(11,4,4,4)) # Increase margin size
 
 ```{r france-semi-received-passes-plot, warning = FALSE, fig.cap = "Figure 6: Barplot of passes receieved on the French team in the 2018 World Cup semifinal where no one or two positions receive the majority of the passes."}
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
-barplot(df_to_semi_france_received_ordered$Freq,decreasing = TRUE, names.arg = df_to_semi_france_received_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_semi_france_received_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_france_received_ordered$Position), args.legend = list("topright", fill = mycolors ),  main = "Passes Received in the 2018 World Cup Semi-Final (France)")
+barplot(df_to_semi_france_received_ordered$Freq,decreasing = TRUE, names.arg = df_to_semi_france_received_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_semi_france_received_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_france_received_ordered$Position), args.legend = list("topright", fill = mycolors ),  main = "Passes Received in the 2018 World Cup Semifinal (France)")
 
 ```
 
 From the barplot of received passes by players on the French team, we observe that midfielders Pogba and Kanté as well as defender Pavard and forward Mbappé Lottin make up 235 of the 497 received passes. This means that 4 of the 13 players make up 47% of the received passes by players on the French team in the France-Belgium semifinal.
 
-We ran a power law fit test to determine if the distribution of sent and received passes on the French team in the French-Belgium semi-final was that of a power law distribution. We calculated an alpha value and p-value using the code below:
+We ran a power law fit test to determine if the distribution of sent and received passes on the French team in the French-Belgium semifinal was that of a power law distribution. We calculated an alpha value and p-value using the code below:
 
 ```{r power-law-fit-test-french-semi, warning = FALSE, message = FALSE}
 # Creates Frequency Tables by Player for the French Team in the Semi
@@ -680,7 +680,7 @@ fit_power_law(player_recieve_france_s$Freq)
 
 Using a frequency table for the number of passes and receptions made by the French team in the 2018 World Cup semifinal against Belgium, we were able to run a power law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 4.766 and 4.205 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the passes and receptions made by each of the players on the French team are skewed at almost the same amount. If we look at the p-values, we see that the passes have a p-value of 0.924, which implies that it has a relatively high fit for the power law; the p-value for the receptions is 0.987, which also implies that the receptions by players have a higher fit for the power law. We can suggest that, in the semifinal, the French team was attempting to give the ball to their star players, which leads to a higher fit for the receptions. Anyone can steal and pass the ball, but which player you pass the ball to so that they can make an offensive play matters. If you give the ball to the star attackmen, then they have a good chance of scoring. This was a hard game for France, and they needed their star players to have the ball so they could score and thus win the game, which they did. 
 
-##### Belgium in the 2018 World Cup Semi-Final 
+##### Belgium in the 2018 World Cup Semifinal 
 
 ```{r belgium-semi-sent-passes-code, include = FALSE, warning = FALSE}
 
@@ -729,11 +729,11 @@ par(mar=c(11,4,4,4)) # Increase margin size
 
 ```{r belgium-semi-sent-passes-plot, warning = FALSE, fig.cap = "Figure 7: Barplot of passes sent on the Belgian team in the 2018 World Cup semifinal where most midfielders and defenders send more passes than forwards and the goalkeeper."}
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
-barplot(df_from_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_bel_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_from_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Semi-Final (Belgium)")
+barplot(df_from_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_bel_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_from_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Semifinal (Belgium)")
 
 ```
 
-From the barplot of sent passes by players on the Belgian team, we observe that defenders Alderweireld and Vertonghen as well as midfielder Witsel and forward Hazard make up 274 of the 569 sent passes. This means that 4 of the 13 players make up 48% of the sent passes by players on the Belgian team in the France-Belgium semifinal.
+From the barplot of sent passes by players on the Belgian team, we observe that defenders Alderweireld and Vertonghen as well as midfielder Witsel and forward Hazard make up 274 of the 569 sent passes. This means that 4 of the 14 players make up 48% of the sent passes by players on the Belgian team in the France-Belgium semifinal.
 
 ```{r belgium-semi-received-passes-code, include = FALSE, warning = FALSE}
 
@@ -782,11 +782,13 @@ par(mar=c(11,4,4,4)) # Increase margin size
 
 ```{r belgium-semi-received-passes-plot, warning = FALSE, fig.cap = "Figure 8: Barplot of passes received on the Belgian team in the 2018 World Cup semifinal where most midfielders and defenders receive more passes than forwards and the goalkeeper."}
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
-barplot(df_to_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_to_semi_bel_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Semi-Final (Belgium)")
+barplot(df_to_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_to_semi_bel_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Semifinal (Belgium)")
 
 ```
 
-Then, we ran a power law fit test to determine if the distribution of sent and received passes on the Belgian team in the French-Belgium semi-final was that of a power law distribution. We calculated an alpha value and p-value using the code below:
+From the barplot of received passes by players on the Belgian team, we observe that defenders Alderweireld and Vertonghen as well as forward Hazard and midfielder Witsel make up 278 of the 569 sent passes. This means that 4 of the 14 players make up 49% of the sent passes by players on the Belgian team in the France-Belgium semifinal.
+
+Then, we ran a power law fit test to determine if the distribution of sent and received passes on the Belgian team in the French-Belgium semifinal was that of a power law distribution. We calculated an alpha value and p-value using the code below:
 
 ```{r power-law-fit-test-belgium-semi, warning = FALSE, message = FALSE}
 # Creates Frequency Tables by Player for the Belgian Team in the Semi
@@ -855,6 +857,9 @@ barplot(df_from_final_france_sent_ordered$Freq,decreasing = TRUE, names.arg = df
 
 ```
 
+From the barplot of sent passes by players on the French team, we observe that midfielders Kanté and Pogba as well as defenders Pavard and Varane make up 246 of the 513 sent passes. This means that 4 of the 14 players make up 48% of the sent passes by players on the French team in the France-Croatia final.
+
+
 ```{r france-final-received-passes-code, include = FALSE, warning = FALSE}
 
 #passes sent from each player data frame creation
@@ -905,6 +910,8 @@ par(mar=c(11,4,4,4)) # Increase margin size
 barplot(df_to_final_france_received_ordered$Freq,decreasing = TRUE, names.arg = df_to_final_france_received_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_final_france_received_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_final_france_received_ordered$Position), args.legend = list("topright", fill = mycolors ),  main = "Passes Received in the 2018 World Cup Final (France)")
 
 ```
+
+From the barplot of received passes by players on the French team, we observe that midfielders Kanté and Pogba as well as defender Pavard and forward Mbappé Lottin make up 228 of the 513 sent passes. This means that 4 of the 14 players make up 44% of the received passes by players on the French team in the France-Croatia final.
 
 Again, we ran a power law fit test to determine if the distribution of sent and received passes on the French team in the Croatia-French final was that of a power law distribution. We calculated an alpha value and p-value using the code below:
 
@@ -976,6 +983,9 @@ barplot(df_from_final_croatia_sent_ordered$Freq,decreasing = TRUE, names.arg = d
 
 ```
 
+From the barplot of sent passes by players on the Croatian team, we observe that midfielders Modrić, Rakitić, and Brozović as well as defender Lovren make up 347 of the 628 sent passes. This means that 4 of the 13 players make up 55% of the sent passes by players on the Croatian team in the France-Croatia final.
+
+
 ```{r croatia-final-received-passes-code, include = FALSE, warning = FALSE}
 
 #passes received from each player data frame creation
@@ -1026,6 +1036,8 @@ par(mar=c(11,4,4,4)) # Increase margin size
 barplot(df_to_final_croatia_receieved_ordered$Freq,decreasing = TRUE, names.arg = df_to_final_croatia_receieved_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_final_croatia_receieved_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_final_croatia_receieved_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Final (Croatia)")
 
 ```
+
+From the barplot of received passes by players on the Croatian team, we observe that midfielders Modrić and Rakitić as well as defenders Lovren and Vrsaljko make up 302 of the 628 sent passes. This means that 4 of the 13 players make up 48% of the sent passes by players on the Croatian team in the France-Croatia final.
 
 Lastly, we ran a power law fit test to determine if the distribution of sent and received passes on the Croatian team in the Croatia-French final was that of a power law distribution. We calculated an alpha value and p-value using the code below:
 
