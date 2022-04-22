@@ -392,7 +392,7 @@ barplot(df_from_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_from_sem
 
 ```
 
-### France semi-final passes received by each player 
+### Belgium semi-final passes received by each player 
 ```{r}
 #passes received from each player data frame creation
 to_table_bel <-table(belgium_semi[,2])
@@ -439,5 +439,3 @@ par(mar=c(11,4,4,4)) # Increase margin size
 barplot(df_to_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_to_semi_bel_ordered$Var1, decreasing = TRUE, ylab = "Number of passes from" ,col = mycolors[df_to_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Semi-Final (Belgium)")
 
 ```
-
- 
