@@ -278,7 +278,7 @@ par(mar=c(11,4,4,4)) # Increase margin size
 barplot(df_from_semi_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_ordered$Var1, decreasing = TRUE, ylab = "Number of passes from" ,col = mycolors[df_from_semi_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Complete Passes Sent in the 2018 World Cup Semi-Final (France)")
 
 ```
-
+The barplot above displays the number of passes that each player did (sent). This portrays the center midfielders (Kante and Pogba) having sent the most passes. This results are not surprisingto see as they are the ones who are suppose to control the field and be the "bridge" between the defenders and the forwards. Both Kante and Pogba are world class players and playing for top teams. The game was won by France 1-0 with the goal being from Umtiti
 ### France semi-final passes received by each player 
 ```{r}
 #passes sent from each player data frame creation
@@ -422,6 +422,5 @@ par(mar=c(11,4,4,4)) # Increase margin size
 barplot(df_to_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_to_semi_bel_ordered$Var1, decreasing = TRUE, ylab = "Number of passes from" ,col = mycolors[df_to_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Semi-Final (Belgium)")
 
 ```
-
 
  
