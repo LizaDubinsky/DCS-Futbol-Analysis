@@ -376,7 +376,7 @@ barplot(df_from_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_from_sem
 
 ```
 
-### France semi-final passes received by each player 
+### Belgium semi-final passes received by each player 
 ```{r}
 #passes received from each player data frame creation
 to_table_bel <-table(belgium_semi[,2])

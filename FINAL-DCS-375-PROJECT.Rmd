@@ -155,14 +155,6 @@ croatia_forward <- c("Ante Rebić", "Andrej Kramarić", "Marko Pjaca", "Mario Ma
 croatia_goalkeeper <- c("Danijel Subašić")
 ```
 
-```{r}
-# create frequency tables for passes sent and received by France and Croatia in the final
-france_final_passes_from <- table(france_final[, 1])
-france_final_passes_to <- table(france_final[, 2])
-
-croatia_final_passes_from <- table(croatia_final[, 1])
-croatia_final_passes_to <- table(croatia_final[, 2])
-```
 
 ```{r france-final-passes-to-barplot}
 png(file="final_france_received_passes.png", width=700, height=500)
@@ -277,3 +269,114 @@ image_write(final_croatia_image,path = "final_field_croatia.png", format = "png"
 ```
 
 
+```{r}
+# create frequency tables for passes sent and received by France and Croatia in the final
+france_final_passes_from <- table(france_final[, 1])
+france_final_passes_to <- table(france_final[, 2])
+
+croatia_final_passes_from <- table(croatia_final[, 1])
+croatia_final_passes_to <- table(croatia_final[, 2])
+```
+
+```{r france-final-received-passes-code, warning = FALSE}
+
+#passes received from each player data frame creation
+df_to_final_france <- as.data.frame(france_final_passes_to)
+
+##having extra df unchanged df just in case for future use
+extra_df_to_final_france <- df_to_final_france
+
+#creating new column in our data frame
+df_to_final_france$Position <- "a"
+#for loop that inputs the position on of the player in the new position column
+for(i in 1:nrow(df_to_final_france)){
+  # our element we are working with
+  df_row_check <- df_to_final_france$Var1[i]
+  # checking if the player is a goalkeeper 
+  if(df_row_check %in% france_goalkeeper){
+    df_to_final_france$Position[i] <- "Goalkeeper" # if a player is a goalkeeper it will input label in the position column of df
+  }
+  # checking if the player is a defender 
+  if(df_row_check %in% france_defender){
+    df_to_final_france$Position[i] <- "Defender" # if a player is a defender it will input label in the position column of df
+  }
+   # checking if the player is a midfielder 
+  if(df_row_check %in% france_midfielder){
+    df_to_final_france_sent$Position[i] <- "Midfielder" # if a player is a midfielder it will input label in the position column of df
+  }
+   # checking if the player is a forward
+  if(df_row_check %in% france_forward){
+    df_to_final_france$Position[i] <- "Forward" # if a player is a forward it will input label in the position column of df
+  }
+  
+}
+
+# making the positions a factor to categorize the different positions
+df_to_final_france$Position <- as.factor(df_to_final_france$Position)
+# Selecting specific colors to use for barplot 
+mycolors <- c("#440154","#31688e","#35b779","#fde725")
+
+
+# sorting the data frame to have player that completed the highest number of passes 
+df_to_final_france_ordered <- df_to_final_france[order(-df_to_final_france$Freq),,]
+par(mar=c(11,4,4,4)) # Increase margin size
+```
+
+```{r france-received-passes-plot, warning = FALSE}
+
+# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
+barplot(df_to_final_france_ordered$Freq,decreasing = TRUE, names.arg = df_to_final_france_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_final_france_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_final_france_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Semi-Final (France)")
+
+```
+
+
+```{r france-final-sent-passes-code, warning = FALSE}
+
+#passes received from each player data frame creation
+df_to_final_france_sent <- as.data.frame(france_final_passes_from)
+
+##having extra df unchanged df just in case for future use
+extra_df_to_final_france_sent <- df_to_final_france_sent
+
+#creating new column in our data frame
+df_to_final_france_sent$Position <- "a"
+#for loop that inputs the position on of the player in the new position column
+for(i in 1:nrow(df_to_final_france_sent)){
+  # our element we are working with
+  df_row_check <- df_to_final_france_sent$Var1[i]
+  # checking if the player is a goalkeeper 
+  if(df_row_check %in% france_goalkeeper){
+    df_to_final_france_sent$Position[i] <- "Goalkeeper" # if a player is a goalkeeper it will input label in the position column of df
+  }
+  # checking if the player is a defender 
+  if(df_row_check %in% france_defender){
+    df_to_final_france_sent$Position[i] <- "Defender" # if a player is a defender it will input label in the position column of df
+  }
+   # checking if the player is a midfielder 
+  if(df_row_check %in% france_midfielder){
+    df_to_final_france_sent$Position[i] <- "Midfielder" # if a player is a midfielder it will input label in the position column of df
+  }
+   # checking if the player is a forward
+  if(df_row_check %in% france_forward){
+    df_to_final_france_sent$Position[i] <- "Forward" # if a player is a forward it will input label in the position column of df
+  }
+  
+}
+
+# making the positions a factor to categorize the different positions
+df_to_final_france_sent$Position <- as.factor(df_to_final_france_sent$Position)
+# Selecting specific colors to use for barplot 
+mycolors <- c("#440154","#31688e","#35b779","#fde725")
+
+
+# sorting the data frame to have player that completed the highest number of passes 
+df_to_final_france_sent_ordered <- df_to_final_france_sent[order(-df_to_final_france_sent$Freq),,]
+par(mar=c(11,4,4,4)) # Increase margin size
+```
+
+```{r france-final-sent-passes-plot, warning = FALSE}
+
+# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
+barplot(df_to_final_france_sent_ordered$Freq,decreasing = TRUE, names.arg = df_to_final_france_sent_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_final_france_sent_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_final_france_sent_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Final (France)")
+
+```
