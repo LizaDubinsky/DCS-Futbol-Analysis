@@ -254,7 +254,7 @@ france_final.g <- graph.edgelist(france_final, directed = TRUE) # makes a graph 
 
 #### Visualizing Directed Networks
 
-To create accessible network visualizations, we used shape and color to distinguish between the positions played by player in each team across both games. The goalkeeper is a yellow sphere, the defenders are blue circles, the midfielders are purple squares, and the forwards are green rectangles.The below code assigns players on the French team to different positions: 
+To create accessible network visualizations, we used shape and color to distinguish between the positions played by player in each team across both games. The goalkeeper is a yellow sphere, the defenders are blue circles, the midfielders are purple squares, and the forwards are green rectangles. The below code assigns players on the French team to different positions: 
 
 ```{r identify-france-players, warning = FALSE}
 
@@ -415,10 +415,27 @@ semi_belgium_image <- image_composite(image_scale(soccer_field_belgium_semi, "x1
 
 ```
 
-```{r plot-soccer-field-networks, warning = FALSE}
-plot(semi_france_image )
+##### France in the 2018 World Cup Semi-Final 
+
+```{r plot-france-semi-field-network, warning = FALSE}
+plot(semi_france_image)
+```
+
+##### Belgium in the 2018 World Cup Semi-Final 
+
+```{r plot-belgium-semi-field-network, warning = FALSE}
 plot(semi_belgium_image)
+```
+
+##### France in the 2018 World Cup Final 
+
+```{r plot-france-final-field-network, warning = FALSE}
 plot(final_france_image)
+```
+
+##### Croatia in the 2018 World Cup Final 
+
+```{r plot-croatia-final-field-network, warning = FALSE}
 plot(final_croatia_image)
 ```
 
@@ -495,7 +512,7 @@ cent.eig$vector[ind][1:14]
 
  (include interpretation using this article: (https://arxiv.org/pdf/1206.6904.pdf))
 
-#### Modeling 
+#### Modeling Sent and Received Passing Distributions for Teams in the 2018 World Cup Final and Semi-Final
 
 To explore the distribution of sent and received passes on each team in both games, we first constructed frequency tables of the number of passes sent and received per player. The below code is for the French and Croatian team in the France-Croatia final:
 
@@ -507,223 +524,9 @@ croatia_final_passes_from <- table(croatia_final[, 1])
 croatia_final_passes_to <- table(croatia_final[, 2])
 ```
 
-Then, we constructed bar plots, where the color of each bar corresponds to the player's position. The below code is for the passes recieved and sent by players on the French team in the France-Croatia final:
+Then, we constructed bar plots, where the color of each bar corresponds to the player's position:
 
-```{r france-final-sent-passes-code, include = FALSE, warning = FALSE}
-
-#passes sent from each player data frame creation
-from_table_france_final <-table(france_final[,1])
-df_from_final_france_sent <- as.data.frame(from_table_france_final)
-
-##having extra df unchanged df just in case for future use
-extra_df_from_final_france_sent <- df_from_final_france_sent
-
-#creating new column in our data frame
-df_from_final_france_sent$Position <- "a"
-#for loop that inputs the position on of the player in the new position column
-for(i in 1:nrow(df_from_final_france_sent)){
-  # our element we are working with
-  df_row_check <- df_from_final_france_sent$Var1[i]
-  # checking if the player is a goalkeeper 
-  if(df_row_check %in% france_goalkeeper){
-    df_from_final_france_sent$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
-  }
-  # checking if the player is a defender 
-  if(df_row_check %in% france_defender){
-    df_from_final_france_sent$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
-  }
-   # checking if the player is a midfielder 
-  if(df_row_check %in% france_midfielder){
-    df_from_final_france_sent$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
-  }
-   # checking if the player is a forward
-  if(df_row_check %in% france_forward){
-    df_from_final_france_sent$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
-  }
-  
-}
-
-# making the positions a factor to categorize the different positions
-df_from_final_france_sent$Position <- as.factor(df_from_final_france_sent$Position)
-# Selecting specific colors to use for barplot 
-mycolors <- c("#440154","#31688e","#35b779","#fde725")
-
-
-# sorting the data frame to have player that completed the highest number of passes 
-df_from_final_france_sent_ordered <- df_from_final_france_sent[order(-df_from_final_france_sent$Freq),,]
-par(mar=c(11,4,4,4)) # Increase margin size
-# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
-```
-
-```{r france-final-sent-passes-plot, warning = FALSE}
-barplot(df_from_final_france_sent_ordered$Freq,decreasing = TRUE, names.arg = df_from_final_france_sent_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_from_final_france_sent_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_final_france_sent_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Final (France)")
-
-```
-
-```{r france-final-received-passes-code, include = FALSE, warning = FALSE}
-
-#passes sent from each player data frame creation
-to_table_france_final <-table(france_final[,2])
-df_to_final_france_received <- as.data.frame(to_table_france_final)
-
-##having extra df unchanged df just in case for future use
-extra_df_to_final_france_received <- df_to_final_france_received
-
-#creating new column in our data frame
-df_to_final_france_received$Position <- "a"
-#for loop that inputs the position on of the player in the new position column
-for(i in 1:nrow(df_to_final_france_received)){
-  # our element we are working with
-  df_row_check <- df_to_final_france_received$Var1[i]
-  # checking if the player is a goalkeeper 
-  if(df_row_check %in% france_goalkeeper){
-    df_to_final_france_received$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
-  }
-  # checking if the player is a defender 
-  if(df_row_check %in% france_defender){
-    df_to_final_france_received$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
-  }
-   # checking if the player is a midfielder 
-  if(df_row_check %in% france_midfielder){
-    df_to_final_france_received$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
-  }
-   # checking if the player is a forward
-  if(df_row_check %in% france_forward){
-    df_to_final_france_received$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
-  }
-  
-}
-
-# making the positions a factor to categorize the different positions
-df_to_final_france_received$Position <- as.factor(df_to_final_france_received$Position)
-# Selecting specific colors to use for barplot 
-mycolors <- c("#440154","#31688e","#35b779","#fde725")
-
-
-# sorting the data frame to have player that completed the highest number of passes 
-df_to_final_france_received_ordered <- df_to_final_france_received[order(-df_to_final_france_received$Freq),,]
-par(mar=c(11,4,4,4)) # Increase margin size
-```
-
-```{r france-final-received-passes-plot, warning = FALSE}
-# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
-barplot(df_to_final_france_received_ordered$Freq,decreasing = TRUE, names.arg = df_to_final_france_received_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_final_france_received_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_final_france_received_ordered$Position), args.legend = list("topright", fill = mycolors ),  main = "Passes Received in the 2018 World Cup Final (France)")
-
-```
-
-**Power Law Fit for the Passes and Receptions by the French Team in the Final:** 
-
-Using a frequency table for the number of passes and receptions made by the French team in the 2018 World Cup final, we were able to run a power law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 4.222 and 6.188 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the passes made by each of the players on the French team are less skewed and the receptions are more skewed. If we look at the p-values, we see that the passes have a p-value of 0.954, which implies that it has a relatively high fit for the power law; the p-value for the receptions is 0.948, which also implies that the receptions by players have a relatively high fit for the power law. We can suggest that, in the final, the French team was attempting to spread out their passes a little bit because the Croatian players were heavily defending their star players, which lead to a lower fit for the receptions. It also seems like the passes would be made by those in the midfield who were “running” whatever “play” the French team was trying to execute so that they could score a goal, which suggests that the French team was very organized, which makes sense because they were the veteran team. So, the passers have a higher fit for the power law, but the receivers do not have as high of a fit because they are trying to evade the Croatian defenders guarding their star players who would be the ones that could potentially score the most goals.
-
-
-```{r croatia-final-sent-passes-code, include = FALSE, warning = FALSE}
-
-#passes sent from each player data frame creation
-from_table_croatia <- table(croatia_final[,1])
-df_from_final_croatia_sent <- as.data.frame(from_table_croatia)
-
-##having extra df unchanged df just in case for future use
-extra_df_from_final_croatia_sent <- df_from_final_croatia_sent
-
-#creating new column in our data frame
-df_from_final_croatia_sent$Position <- "a"
-#for loop that inputs the position on of the player in the new position column
-for(i in 1:nrow(df_from_final_croatia_sent)){
-  # our element we are working with
-  df_row_check <- df_from_final_croatia_sent$Var1[i]
-  # checking if the player is a goalkeeper 
-  if(df_row_check %in% croatia_goalkeeper){
-    df_from_final_croatia_sent$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
-  }
-  # checking if the player is a defender 
-  if(df_row_check %in% croatia_defender){
-    df_from_final_croatia_sent$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
-  }
-   # checking if the player is a midfielder 
-  if(df_row_check %in% croatia_midfielder){
-    df_from_final_croatia_sent$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
-  }
-   # checking if the player is a forward
-  if(df_row_check %in% croatia_forward){
-    df_from_final_croatia_sent$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
-  }
-  
-}
-
-# making the positions a factor to categorize the different positions
-df_from_final_croatia_sent$Position <- as.factor(df_from_final_croatia_sent$Position)
-# Selecting specific colors to use for barplot 
-mycolors <- c("#440154","#31688e","#35b779","#fde725")
-
-
-# sorting the data frame to have player that completed the highest number of passes 
-df_from_final_croatia_sent_ordered <- df_from_final_croatia_sent[order(-df_from_final_croatia_sent$Freq),,]
-par(mar=c(11,4,4,4)) # Increase margin size
-```
-
-```{r croatia-final-sent-passes-plot, warning = FALSE}
-# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
-barplot(df_from_final_croatia_sent_ordered$Freq,decreasing = TRUE, names.arg = df_from_final_croatia_sent_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_from_final_croatia_sent_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_final_croatia_sent_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Final (Croatia)")
-
-```
-
-
-```{r croatia-final-received-passes-code, include = FALSE, warning = FALSE}
-
-#passes received from each player data frame creation
-to_table_croatia <-table(croatia_final[,2])
-df_to_final_croatia_receieved <- as.data.frame(to_table_croatia)
-
-##having extra df unchanged df just in case for future use
-extra_df_to_final_croatia_receieved<- df_to_final_croatia_receieved
-
-#creating new column in our data frame
-df_to_final_croatia_receieved$Position <- "a"
-#for loop that inputs the position on of the player in the new position column
-for(i in 1:nrow(df_to_final_croatia_receieved)){
-  # our element we are working with
-  df_row_check <- df_to_final_croatia_receieved$Var1[i]
-  # checking if the player is a goalkeeper 
-  if(df_row_check %in% croatia_goalkeeper){
-    df_to_final_croatia_receieved$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
-  }
-  # checking if the player is a defender 
-  if(df_row_check %in% croatia_defender){
-    df_to_final_croatia_receieved$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
-  }
-   # checking if the player is a midfielder 
-  if(df_row_check %in% croatia_midfielder){
-    df_to_final_croatia_receieved$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
-  }
-   # checking if the player is a forward
-  if(df_row_check %in% croatia_forward){
-    df_to_final_croatia_receieved$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
-  }
-  
-}
-
-# making the positions a factor to categorize the different positions
-df_to_final_croatia_receieved$Position <- as.factor(df_to_final_croatia_receieved$Position)
-# Selecting specific colors to use for barplot 
-mycolors <- c("#440154","#31688e","#35b779","#fde725")
-
-
-# sorting the data frame to have player that completed the highest number of passes 
-df_to_final_croatia_receieved_ordered <- df_to_final_croatia_receieved[order(-df_to_final_croatia_receieved$Freq),,]
-par(mar=c(11,4,4,4)) # Increase margin size
-```
-
-```{r croatia-final-received-passes-plot, warning = FALSE}
-# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
-barplot(df_to_final_croatia_receieved_ordered$Freq,decreasing = TRUE, names.arg = df_to_final_croatia_receieved_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_final_croatia_receieved_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_final_croatia_receieved_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Final (Croatia)")
-
-```
-
-
-**Power Law Fit for the Passes and Receptions by the Croatian Team in the Final:** 
-
-Using a similar frequency table, like the one used above, for the number of passes and receptions made by the Croatian team in the 2018 World Cup final, we were able to run a power-law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 2.333 and 7.001 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the number of passes made by each of the Croatian players is less skewed, but the receptions are very skewed. If we look at the p-values, we see that the passes have a p-value of 0.638, which implies that it has a relatively low fit for the power law. The number of passes is more evenly distributed because anyone can steal the ball, and thus make a pass. Conversely, we see that the p-value for the receptions is 0.999, which says that all of the receptions made do fit the power law very well. This makes sense because when looking to advance up the field, you want to pass it to your best players so that they may score a goal, which makes sense because France was in control of this game from the start. So, a few players receive the majority of the passes, whereas the rest of the players only receive the ball a few times because you want your best players to have control of the ball so that you can score goals and win the game. In the context of the game, we believe that the reason we came to these conclusions is that the defenders are stealing the ball and making passes, but they are passing to the offensive players so that they can counterattack and score. One of the most effective ways to score a goal in soccer is to quickly get control of the ball while the other team is attacking and make a lightning-quick drive for the goal because the other team is focused on their own attack. Counterattacks are effective plays and lead to a good shot for a team to score a goal, which Croatia needed in this game because France was leading from the start.
-
+##### France in the 2018 World Cup Semi-Final 
 
 ```{r france-semi-sent-passes-code, include = FALSE, warning = FALSE}
 
@@ -771,7 +574,7 @@ par(mar=c(11,4,4,4)) # Increase margin size
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
 ```
 
-```{r france-semi-sent-passes-plot, warning = FALSE}
+```{r france-semi-sent-passes-plot, warning = FALSE, fig.cap = "Figure 5: Barplot of passes sent on the French team in the 2018 World Cup semifinal where most midfielders and defenders send more passes than forwards and the goalkeeper."}
 barplot(df_from_semi_france_sent_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_france_sent_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_from_semi_france_sent_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_france_sent_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Semi-Final (France)")
 
 ```
@@ -821,16 +624,29 @@ df_to_semi_france_received_ordered <- df_to_semi_france_received[order(-df_to_se
 par(mar=c(11,4,4,4)) # Increase margin size
 ```
 
-```{r france-semi-received-passes-plot, warning = FALSE}
+```{r france-semi-received-passes-plot, warning = FALSE, fig.cap = "Figure 6: Barplot of passes receieved on the French team in the 2018 World Cup semifinal where no one or two positions receive the majority of the passes."}
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
 barplot(df_to_semi_france_received_ordered$Freq,decreasing = TRUE, names.arg = df_to_semi_france_received_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_semi_france_received_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_france_received_ordered$Position), args.legend = list("topright", fill = mycolors ),  main = "Passes Received in the 2018 World Cup Semi-Final (France)")
 
 ```
 
+We ran a power law fit test to determine if the distribution of sent and received passes on the French team in the French-Belgium semi-final was that of a power law distribution. We calculated an alpha value and p-value using the code below:
+
+```{r power-law-fit-test-french-semi, warning = FALSE, message = FALSE}
+# Creates Frequency Tables by Player for the French Team in the Semi
+player_pass_france_s <- as.data.frame(table(connected_pass_france_semi$player.name))
+player_recieve_france_s <- as.data.frame(table(connected_pass_france_semi$pass.recipient.name))
+# Power Law Fit for the Passes by the French Team in the Semi
+fit_power_law(player_pass_france_s$Freq)
+# Power Law Fit for the Receptions by the French Team in the Semi
+fit_power_law(player_recieve_france_s$Freq)
+```
 
 **Power Law Fit for the Passes and Receptions by the French Team in the Semifinal:** 
 
 Using a frequency table for the number of passes and receptions made by the French team in the 2018 World Cup semifinal against Belgium, we were able to run a power law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 4.766 and 4.205 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the passes and receptions made by each of the players on the French team are skewed at almost the same amount. If we look at the p-values, we see that the passes have a p-value of 0.924, which implies that it has a relatively high fit for the power law; the p-value for the receptions is 0.987, which also implies that the receptions by players have a higher fit for the power law. We can suggest that, in the semifinal, the French team was attempting to give the ball to their star players, which leads to a higher fit for the receptions. Anyone can steal and pass the ball, but which player you pass the ball to so that they can make an offensive play matters. If you give the ball to the star attackmen, then they have a good chance of scoring. This was a hard game for France, and they needed their star players to have the ball so they could score and thus win the game, which they did. 
+
+##### Belgium in the 2018 World Cup Semi-Final 
 
 ```{r belgium-semi-sent-passes-code, include = FALSE, warning = FALSE}
 
@@ -877,12 +693,11 @@ df_from_semi_bel_ordered <- df_from_semi_bel[order(-df_from_semi_bel$Freq),,]
 par(mar=c(11,4,4,4)) # Increase margin size
 ```
 
-```{r belgium-semi-sent-passes-plot, warning = FALSE}
+```{r belgium-semi-sent-passes-plot, warning = FALSE, fig.cap = "Figure 7: Barplot of passes sent on the Belgian team in the 2018 World Cup semifinal where most midfielders and defenders send more passes than forwards and the goalkeeper."}
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
 barplot(df_from_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_from_semi_bel_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_from_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Semi-Final (Belgium)")
 
 ```
-
 
 ```{r belgium-semi-received-passes-code, include = FALSE, warning = FALSE}
 
@@ -929,23 +744,272 @@ df_to_semi_bel_ordered <- df_to_semi_bel[order(-df_to_semi_bel$Freq),,]
 par(mar=c(11,4,4,4)) # Increase margin size
 ```
 
-```{r belgium-semi-received-passes-plot, warning = FALSE}
+```{r belgium-semi-received-passes-plot, warning = FALSE, fig.cap = "Figure 8: Barplot of passes received on the Belgian team in the 2018 World Cup semifinal where most midfielders and defenders receive more passes than forwards and the goalkeeper."}
 # plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
 barplot(df_to_semi_bel_ordered$Freq,decreasing = TRUE, names.arg = df_to_semi_bel_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_semi_bel_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_semi_bel_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Semi-Final (Belgium)")
 
+```
+
+Then, we ran a power law fit test to determine if the distribution of sent and received passes on the Belgian team in the French-Belgium semi-final was that of a power law distribution. We calculated an alpha value and p-value using the code below:
+
+```{r power-law-fit-test-belgium-semi, warning = FALSE, message = FALSE}
+# Creates Frequency Tables by Player for the Belgian Team in the Semi
+player_pass_belgium_s <- as.data.frame(table(connected_pass_belgium_semi$player.name))
+player_recieve_belgium_s <- as.data.frame(table(connected_pass_belgium_semi$pass.recipient.name))
+# Power Law Fit for the Passes by the Belgian Team in the Final
+fit_power_law(player_pass_belgium_s$Freq)
+# Power Law Fit for the Receptions by the Belgian Team in the Final
+fit_power_law(player_recieve_belgium_s$Freq)
 ```
 
 **Power Law Fit for the Passes and Receptions by the Belgian Team in the Semifinal:** 
 
 Using a frequency table for the number of passes and receptions made by the Belgian team in the 2018 World Cup semifinal against France, we were able to run a power law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 7.322 and 7.591 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the passes and receptions made by each of the players on the Belgian team are skewed at almost the same amount, but this alpha is very high, so the data we collected is very skewed. If we look at the p-values, we see that the passes have a p-value of 0.999, which implies that it has a very high fit for the power law; the p-value for the receptions is also 0.999, which again implies that the receptions by players have a very high fit for the power law. We can suggest that, in the semifinal, the star players on the Belgian team had the vast majority of control of the ball. This would lead us to believe that the Belgian team is not as deep in terms of talent, and that they were giving it to their star players because this was a very tough game for them. The star players on the Belgian team needed to have the ball because they possessed the highest ability to score a goal against the veteran French team. Belgium did lose this game, but the score was 1-0, which suggests that both teams were playing very hard and had similar strategies.
 
+```{r france-final-sent-passes-code, include = FALSE, warning = FALSE}
+
+#passes sent from each player data frame creation
+from_table_france_final <-table(france_final[,1])
+df_from_final_france_sent <- as.data.frame(from_table_france_final)
+
+##having extra df unchanged df just in case for future use
+extra_df_from_final_france_sent <- df_from_final_france_sent
+
+#creating new column in our data frame
+df_from_final_france_sent$Position <- "a"
+#for loop that inputs the position on of the player in the new position column
+for(i in 1:nrow(df_from_final_france_sent)){
+  # our element we are working with
+  df_row_check <- df_from_final_france_sent$Var1[i]
+  # checking if the player is a goalkeeper 
+  if(df_row_check %in% france_goalkeeper){
+    df_from_final_france_sent$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
+  }
+  # checking if the player is a defender 
+  if(df_row_check %in% france_defender){
+    df_from_final_france_sent$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
+  }
+   # checking if the player is a midfielder 
+  if(df_row_check %in% france_midfielder){
+    df_from_final_france_sent$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
+  }
+   # checking if the player is a forward
+  if(df_row_check %in% france_forward){
+    df_from_final_france_sent$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
+  }
+  
+}
+
+# making the positions a factor to categorize the different positions
+df_from_final_france_sent$Position <- as.factor(df_from_final_france_sent$Position)
+# Selecting specific colors to use for barplot 
+mycolors <- c("#440154","#31688e","#35b779","#fde725")
 
 
+# sorting the data frame to have player that completed the highest number of passes 
+df_from_final_france_sent_ordered <- df_from_final_france_sent[order(-df_from_final_france_sent$Freq),,]
+par(mar=c(11,4,4,4)) # Increase margin size
+# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
+```
 
+##### France in the 2018 World Cup Final 
+
+```{r france-final-sent-passes-plot, warning = FALSE, fig.cap = "Figure 9: Barplot of passes sent on the French team in the 2018 World Cup final where most midfielders and defenders send more passes than forwards and the goalkeeper."}
+barplot(df_from_final_france_sent_ordered$Freq,decreasing = TRUE, names.arg = df_from_final_france_sent_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_from_final_france_sent_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_final_france_sent_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Final (France)")
+
+```
+
+```{r france-final-received-passes-code, include = FALSE, warning = FALSE}
+
+#passes sent from each player data frame creation
+to_table_france_final <-table(france_final[,2])
+df_to_final_france_received <- as.data.frame(to_table_france_final)
+
+##having extra df unchanged df just in case for future use
+extra_df_to_final_france_received <- df_to_final_france_received
+
+#creating new column in our data frame
+df_to_final_france_received$Position <- "a"
+#for loop that inputs the position on of the player in the new position column
+for(i in 1:nrow(df_to_final_france_received)){
+  # our element we are working with
+  df_row_check <- df_to_final_france_received$Var1[i]
+  # checking if the player is a goalkeeper 
+  if(df_row_check %in% france_goalkeeper){
+    df_to_final_france_received$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
+  }
+  # checking if the player is a defender 
+  if(df_row_check %in% france_defender){
+    df_to_final_france_received$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
+  }
+   # checking if the player is a midfielder 
+  if(df_row_check %in% france_midfielder){
+    df_to_final_france_received$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
+  }
+   # checking if the player is a forward
+  if(df_row_check %in% france_forward){
+    df_to_final_france_received$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
+  }
+  
+}
+
+# making the positions a factor to categorize the different positions
+df_to_final_france_received$Position <- as.factor(df_to_final_france_received$Position)
+# Selecting specific colors to use for barplot 
+mycolors <- c("#440154","#31688e","#35b779","#fde725")
+
+
+# sorting the data frame to have player that completed the highest number of passes 
+df_to_final_france_received_ordered <- df_to_final_france_received[order(-df_to_final_france_received$Freq),,]
+par(mar=c(11,4,4,4)) # Increase margin size
+```
+
+```{r france-final-received-passes-plot, warning = FALSE, fig.cap = "Figure 10: Barplot of passes received on the French team in the 2018 World Cup final where no one or two positions receive the majority of the passes."}
+# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
+barplot(df_to_final_france_received_ordered$Freq,decreasing = TRUE, names.arg = df_to_final_france_received_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_final_france_received_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_final_france_received_ordered$Position), args.legend = list("topright", fill = mycolors ),  main = "Passes Received in the 2018 World Cup Final (France)")
+
+```
+
+Again, we ran a power law fit test to determine if the distribution of sent and received passes on the French team in the Croatia-French final was that of a power law distribution. We calculated an alpha value and p-value using the code below:
+
+```{r power-law-fit-test-french-final, warning = FALSE, message = FALSE}
+# Creates Frequency Tables by Player for the French Team in the Final
+player_pass_france_f <- as.data.frame(table(connected_pass_france_final$player.name))
+player_recieve_france_f <- as.data.frame(table(connected_pass_france_final$pass.recipient.name))
+# Power Law Fit for the Passes by the French Team in the Final
+fit_power_law(player_pass_france_f$Freq)
+# Power Law Fit for the Receptions by the French Team in the Final
+fit_power_law(player_recieve_france_f$Freq)
+```
+
+**Power Law Fit for the Passes and Receptions by the French Team in the Final:** 
+
+Using a frequency table for the number of passes and receptions made by the French team in the 2018 World Cup final, we were able to run a power law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 5.114 and 3.287 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. So, we see that the passes made by each of the players on the French team are less skewed and the receptions are more skewed. If we look at the p-values, we see that the passes have a p-value of 0.950, which implies that it has a relatively high fit for the power law; the p-value for the receptions is 0.942, which also implies that the receptions by players have a relatively high fit for the power law. We can suggest that, in the final, the French team was attempting to spread out their passes a little bit because the Croatian players were heavily defending their star players, which lead to a lower fit for the receptions. It also seems like the passes would be made by those in the midfield who were “running” whatever “play” the French team was trying to execute so that they could score a goal, which suggests that the French team was very organized, which makes sense because they were the veteran team. So, the passers have a higher fit for the power law, but the receivers do not have as high of a fit because they are trying to evade the Croatian defenders guarding their star players who would be the ones that could potentially score the most goals.
+
+
+##### Croatia in the 2018 World Cup Final 
+
+```{r croatia-final-sent-passes-code, include = FALSE, warning = FALSE}
+
+#passes sent from each player data frame creation
+from_table_croatia <- table(croatia_final[,1])
+df_from_final_croatia_sent <- as.data.frame(from_table_croatia)
+
+##having extra df unchanged df just in case for future use
+extra_df_from_final_croatia_sent <- df_from_final_croatia_sent
+
+#creating new column in our data frame
+df_from_final_croatia_sent$Position <- "a"
+#for loop that inputs the position on of the player in the new position column
+for(i in 1:nrow(df_from_final_croatia_sent)){
+  # our element we are working with
+  df_row_check <- df_from_final_croatia_sent$Var1[i]
+  # checking if the player is a goalkeeper 
+  if(df_row_check %in% croatia_goalkeeper){
+    df_from_final_croatia_sent$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
+  }
+  # checking if the player is a defender 
+  if(df_row_check %in% croatia_defender){
+    df_from_final_croatia_sent$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
+  }
+   # checking if the player is a midfielder 
+  if(df_row_check %in% croatia_midfielder){
+    df_from_final_croatia_sent$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
+  }
+   # checking if the player is a forward
+  if(df_row_check %in% croatia_forward){
+    df_from_final_croatia_sent$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
+  }
+  
+}
+
+# making the positions a factor to categorize the different positions
+df_from_final_croatia_sent$Position <- as.factor(df_from_final_croatia_sent$Position)
+# Selecting specific colors to use for barplot 
+mycolors <- c("#440154","#31688e","#35b779","#fde725")
+
+
+# sorting the data frame to have player that completed the highest number of passes 
+df_from_final_croatia_sent_ordered <- df_from_final_croatia_sent[order(-df_from_final_croatia_sent$Freq),,]
+par(mar=c(11,4,4,4)) # Increase margin size
+```
+
+```{r croatia-final-sent-passes-plot, warning = FALSE, fig.cap = "Figure 11: Barplot of passes sent on the Croatian team in the 2018 World Cup final where all midfielders and defenders send more passes than forwards and the goalkeeper."}
+# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
+barplot(df_from_final_croatia_sent_ordered$Freq,decreasing = TRUE, names.arg = df_from_final_croatia_sent_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_from_final_croatia_sent_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_from_final_croatia_sent_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Sent in the 2018 World Cup Final (Croatia)")
+
+```
+
+```{r croatia-final-received-passes-code, include = FALSE, warning = FALSE}
+
+#passes received from each player data frame creation
+to_table_croatia <-table(croatia_final[,2])
+df_to_final_croatia_receieved <- as.data.frame(to_table_croatia)
+
+##having extra df unchanged df just in case for future use
+extra_df_to_final_croatia_receieved<- df_to_final_croatia_receieved
+
+#creating new column in our data frame
+df_to_final_croatia_receieved$Position <- "a"
+#for loop that inputs the position on of the player in the new position column
+for(i in 1:nrow(df_to_final_croatia_receieved)){
+  # our element we are working with
+  df_row_check <- df_to_final_croatia_receieved$Var1[i]
+  # checking if the player is a goalkeeper 
+  if(df_row_check %in% croatia_goalkeeper){
+    df_to_final_croatia_receieved$Position[i] <- "GK" # if a player is a goalkeeper it will input label in the position column of df
+  }
+  # checking if the player is a defender 
+  if(df_row_check %in% croatia_defender){
+    df_to_final_croatia_receieved$Position[i] <- "DF" # if a player is a defender it will input label in the position column of df
+  }
+   # checking if the player is a midfielder 
+  if(df_row_check %in% croatia_midfielder){
+    df_to_final_croatia_receieved$Position[i] <- "CM" # if a player is a midfielder it will input label in the position column of df
+  }
+   # checking if the player is a forward
+  if(df_row_check %in% croatia_forward){
+    df_to_final_croatia_receieved$Position[i] <- "FW" # if a player is a forward it will input label in the position column of df
+  }
+  
+}
+
+# making the positions a factor to categorize the different positions
+df_to_final_croatia_receieved$Position <- as.factor(df_to_final_croatia_receieved$Position)
+# Selecting specific colors to use for barplot 
+mycolors <- c("#440154","#31688e","#35b779","#fde725")
+
+
+# sorting the data frame to have player that completed the highest number of passes 
+df_to_final_croatia_receieved_ordered <- df_to_final_croatia_receieved[order(-df_to_final_croatia_receieved$Freq),,]
+par(mar=c(11,4,4,4)) # Increase margin size
+```
+
+```{r croatia-final-received-passes-plot, warning = FALSE, fig.cap = "Figure 12: Barplot of passes received on the Croatian team in the 2018 World Cup final where all midfielders and defenders receive more passes than forwards and the goalkeeper."}
+# plotting barplot of the frequency a player completed a pass, colored based on the positon of the player
+barplot(df_to_final_croatia_receieved_ordered$Freq,decreasing = TRUE, names.arg = df_to_final_croatia_receieved_ordered$Var1, decreasing = TRUE, ylab = "Number of Passes" ,col = mycolors[df_to_final_croatia_receieved_ordered$Position],las=2,cex.names = 0.5, legend.text= levels(df_to_final_croatia_receieved_ordered$Position), args.legend = list("topright", fill =mycolors ),  main = "Passes Received in the 2018 World Cup Final (Croatia)")
+
+```
+
+Lastly, we ran a power law fit test to determine if the distribution of sent and received passes on the Croatian team in the Croatia-French final was that of a power law distribution. We calculated an alpha value and p-value using the code below:
+
+```{r power-law-fit-test-croatia-final, warning = FALSE, message = FALSE}
+# Creates Frequency Tables by Player for the Croatian Team in the Final
+player_pass_croatia_f <- as.data.frame(table(connected_pass_croatia_final$player.name))
+player_recieve_croatia_f <- as.data.frame(table(connected_pass_croatia_final$pass.recipient.name))
+# Power Law Fit for the Passes by the Croatian Team in the Final
+fit_power_law(player_pass_croatia_f$Freq)
+# Power Law Fit for the Receptions by the Croatian Team in the Final
+fit_power_law(player_recieve_croatia_f$Freq)
+```
+
+**Power Law Fit for the Passes and Receptions by the Croatian Team in the Final:** 
+
+Using a similar frequency table, like the one used above, for the number of passes and receptions made by the Croatian team in the 2018 World Cup final, we were able to run a power-law fit test to see if this data does in fact match a power law distribution. This analysis of the passes and receptions could be made separately, and each does tell its own story, but together the analyses make a better story. If we look at the alpha value for each, we see that alpha is 1.883 and 6.342 for the passes and receptions, respectively. A larger alpha implies that the data is heavily skewed, and a smaller alpha implies that the data is less skewed. We see that the number of passes made by each of the Croatian players is less skewed, but the receptions are very skewed. If we look at the p-values, we see that the passes have a p-value of 0.546, which implies that it has a relatively low fit for the power law. The number of passes is more evenly distributed because anyone can steal the ball, and thus make a pass. Conversely, we see that the p-value for the receptions is 0.989, which says that all of the receptions made do fit the power law very well. This makes sense because when looking to advance up the field, you want to pass it to your best players so that they may score a goal, which makes sense because France was in control of this game from the start. So, a few players receive the majority of the passes, whereas the rest of the players only receive the ball a few times because you want your best players to have control of the ball so that you can score goals and win the game. In the context of the game, we believe that the reason we came to these conclusions is that the defenders are stealing the ball and making passes, but they are passing to the offensive players so that they can counterattack and score. One of the most effective ways to score a goal in soccer is to quickly get control of the ball while the other team is attacking and make a lightning-quick drive for the goal because the other team is focused on their own attack. Counterattacks are effective plays and lead to a good shot for a team to score a goal, which Croatia needed in this game because France was leading from the start.
  
 #### Limitations and Future Work
 
-standardize by playing time, calculations like passes receieved and sent might look different if we have passes/min 
+While these passing network analyses offer insights into playing strategy and key players, there are multiple ways that these analyses may be refined or extended in the future. By standardizing by playing time, our analyses of pass distributions across teams in different 2018 World Cup games would more accurately reflect team dynamics and key player positions in sending and receiving passes on different teams. Further, by utilizing the starting and ending coordinates of passes from the [Dato-Futbol/passing-networks GitHub repository](https://github.com/Dato-Futbol/passing-networks), our passing network visualizations could be extended to create a network of player positions and accurate mappings of passes between them based on real-time coordinates data. It would even be possible to construct a heatmap of where passes occur across the field. 
 
 
 5. References to at least four pieces of scholarly writing (these should include readings from the disciplinary or domain space that your question is in, as well as network theory readings from the course)
