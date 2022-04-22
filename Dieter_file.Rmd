@@ -212,30 +212,35 @@ library(magick)
 ```{r}
 #importing both a png image of a soccer field and the france network of passes image created above
 soccer_png <- image_read("soccer_fil.png")
-france_png <- image_read("france_semi.png")
-belgium_png <- image_read("belgium_semi.png")
+france_semi_png <- image_read("france_semi.png")
+belgium_semi_png <- image_read("belgium_semi.png")
 
 ```
 
 
 ```{r}
 # so we dont have to re-read images from above
-france_pgn1 <- france_png
-belgium_png_1 <- belgium_png
+france_pgn_semi <- france_semi_png
+belgium_png_semi <- belgium_semi_png
 soccer_field <-soccer_png
 
+# adding alt text to the image of the soccer field 
+soccer_field_france_semi <- image_annotate(soccer_field, "Figure 1: France's passing network in the 2018 World Cup semifinal against Belgium", size = 15, font = "Times",gravity = "west", color = "white", location = "+55+295")
+
+soccer_field_belgium_semi <- image_annotate(soccer_field, "Figure 2: Belgium's passing network in the 2018 World Cup semifinal against France", size = 15, font = "Times",gravity = "east", color = "white", location = "+55+295")
+
 #scaling France network of passes image to 1000 height
-france_pgn1 <- image_scale(france_pgn1, "x1000")
+france_pgn_semi <- image_scale(france_pgn_semi, "x1000")
 #creating a composite of both images and moving the France network using offset to the right and down
 # scaling the soccer field to 1000 in height 
-final_image_french_semi <- image_composite(image_scale(soccer_field, "x1000"), france_pgn1, offset = "+500+0")
+final_image_french_semi <- image_composite(image_scale(soccer_field_france_semi, "x1000"), france_pgn_semi, offset = "+500+0")
 
 
 #scaling Belgium network of passes image to 1000 height
-belgium_png_1  <- image_scale(belgium_png_1 , "x1000")
+belgium_png_semi  <- image_scale(belgium_png_semi , "x1000")
 #creating a composite of both images and moving the belgium network using offset to the right and down
 # scaling the soccer field to 1000 in height 
-final_image_belgian_semi <- image_composite(image_scale(soccer_field, "x1000"), belgium_png_1 , offset = "+0+0")
+final_image_belgian_semi <- image_composite(image_scale(soccer_field_belgium_semi, "x1000"), belgium_png_semi , offset = "+0+0")
 ```
 
 ```{r}
