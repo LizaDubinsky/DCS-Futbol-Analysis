@@ -130,17 +130,10 @@ colnames(belgium_semi) <- c("from", "to")
 # create a graph object for network analysis
 france_semi.g <- graph.edgelist(france_semi, directed = TRUE) # makes a graph object
 belgium_semi.g <- graph.edgelist(belgium_semi, directed = TRUE) # makes a graph object
-'
-png(file="france_semi.png", width=1000, height=1000)
-plot(france_semi.g, )
-png(file="belgium_semi.png", width=1000, height=1000)
-plot(belgium_semi.g)
-dev.off()
-'
 ```
 
 
-
+### Identifying French players for the World Cup 2018 and their respective postions
 ```{r identify-france-players}
 
 france_midfielder <- c("Corentin Tolisso", "Paul Pogba", "N''Golo Kanté", "Blaise Matuidi", "Steven N''Kemboanza Mike Christopher Nzonzi", "Thomas Lemar", "Florian Thauvin")
@@ -149,6 +142,7 @@ france_forward <- c("Ousmane Dembélé", "Kylian Mbappé Lottin", "Antoine Griez
 france_goalkeeper <- c("Hugo Lloris", "Steve Mandanda")
 ```
 
+### Identifying Belgian players for the World Cup 2018 and their respective postions
 ```{r identify-belgium-players}
 
 belgium_midfielder <- c("Kevin De Bruyne", "Axel Witsel", "Yannick Ferreira Carrasco", "Mousa Sidi Yaya Dembélé", "Thorgan Hazard", "Nacer Chadli", "Marouane Fellaini-Bakkioui", "Youri Tielemans", "Adnan Januzaj")
@@ -156,25 +150,42 @@ belgium_defender <- c("Thomas Meunier", "Anga Dedryck Boyata", "Jan Vertonghen",
 belgium_forward <- c("Eden Hazard", "Dries Mertens", "Romelu Lukaku Menama", "Michy Batshuayi Tunga")
 belgium_goalkeeper <- c("Thibaut Courtois")
 ```
-
+#### Assigning color and shape to network nodes based on the position of the players
+French Players:
 ```{r}
+# Changing color of nodes to represent a specific position
 V(france_semi.g)[V(france_semi.g)$name %in% france_midfielder]$color <- "#440154"
 V(france_semi.g)[V(france_semi.g)$name %in% france_defender]$color <- "#31688e"
 V(france_semi.g)[V(france_semi.g)$name %in% france_forward]$color <- "#35b779"    
 V(france_semi.g)[V(france_semi.g)$name %in% france_goalkeeper]$color <- "#fde725"
-```
 
-
-```{r}
+# Changing shape of nodes to represent a specific position
 V(france_semi.g)[V(france_semi.g)$name %in% france_midfielder]$shape <- "square"
 V(france_semi.g)[V(france_semi.g)$name %in% france_defender]$shape <-  "circle"
 V(france_semi.g)[V(france_semi.g)$name %in% france_forward]$shape <- "rectangle"   
 V(france_semi.g)[V(france_semi.g)$name %in% france_goalkeeper]$shape <- "sphere"
-
 ```
 
 
+Belgian Players:
 ```{r}
+# Changing colors of nodes to represent a specific position
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_midfielder]$color <- "#440154"
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_defender]$color <- "#31688e"
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_forward]$color <- "#35b779"    
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_goalkeeper]$color <- "#fde725"
+
+# Changing shape of nodes to represent a specific position
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_midfielder]$shape <- "square"
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_defender]$shape <-  "circle"
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_forward]$shape <- "rectangle"   
+V(belgium_semi.g)[V(belgium_semi.g)$name %in% belgium_goalkeeper]$shape <- "sphere"
+```
+
+
+### Graphing Network of passes and saving it as a png image file
+```{r}
+# French team's network, choosing specific seed to get the same shape of the network every time
 set.seed(1)
 png(file="france_semi.png", width=1000, height=1000)
 par(bg="transparent")
@@ -182,7 +193,17 @@ plot(france_semi.g, vertex.size = 20, vertex.label.cex = 1, vertex.label.color =
 dev.off()
 ```
 
-### adding the soccer field as a background to the networks 
+
+```{r}
+# Belgian team's network, choosing specific seed to get the same shape of the network every time
+set.seed(2)
+png(file="belgium_semi.png", width=1000, height=1000)
+par(bg="transparent")
+plot(belgium_semi.g, vertex.size = 20, vertex.label.cex = 1, vertex.label.color = "white")
+dev.off()
+```
+
+### Adding a soccer field as a background to the networks 
 ```{r}
 #install.packages("magick")
 library(magick)
@@ -192,6 +213,7 @@ library(magick)
 #importing both a png image of a soccer field and the france network of passes image created above
 soccer_png <- image_read("soccer_fil.png")
 france_png <- image_read("france_semi.png")
+belgium_png <- image_read("belgium_semi.png")
 
 ```
 
@@ -199,39 +221,34 @@ france_png <- image_read("france_semi.png")
 ```{r}
 # so we dont have to re-read images from above
 france_pgn1 <- france_png
+belgium_png_1 <- belgium_png
 soccer_field <-soccer_png
 
-#scaling france network of passes image to 1000 height
+#scaling France network of passes image to 1000 height
 france_pgn1 <- image_scale(france_pgn1, "x1000")
 #creating a composite of both images and moving the France network using offset to the right and down
 # scaling the soccer field to 1000 in height 
-final_image <- image_composite(image_scale(soccer_field, "x1000"), france_pgn1, offset = "+500+0")
+final_image_french_semi <- image_composite(image_scale(soccer_field, "x1000"), france_pgn1, offset = "+500+0")
 
+
+#scaling Belgium network of passes image to 1000 height
+belgium_png_1  <- image_scale(belgium_png_1 , "x1000")
+#creating a composite of both images and moving the belgium network using offset to the right and down
+# scaling the soccer field to 1000 in height 
+final_image_belgian_semi <- image_composite(image_scale(soccer_field, "x1000"), belgium_png_1 , offset = "+0+0")
 ```
 
 ```{r}
 #exporting image to folder 
-image_write(final_image,path = "semis_field_france.png", format = "png")
+image_write(final_image_french_semi,path = "semis_field_france.png", format = "png")
+image_write(final_image_belgian_semi,path = "semis_field_Belgium.png", format = "png")
 ```
 
 website explaning how to use magick 
 https://cran.r-project.org/web/packages/magick/vignettes/intro.html
 
-
-
-maybe isntead of weighted edges we switch node size depending on the amount of connections they have?
-but if we can fiugre out edge weight would be hugeee
-```{r}
-
-#png(file="france_semi.png", width=1000, height=1000)
-#par(bg="transparent")
-deg <- degree(france_semi.g, mode="all")
-#plot(france_semi.g, vertex.size = deg/4, vertex.label.cex = 1, vertex.label.color = "white")
-#dev.off()
-```
-
-## Creating Barplots for the Semifinal depicting the number of passes sent and received from each player
-### France semi-final passes sent from each player 
+### Creating Barplots for the Semifinal depicting the number of passes sent and received from each player
+#### France semi-final passes sent from each player 
 ```{r}
 #passes sent from each player data frame creation
 from_table <-table(france_semi[,1])
