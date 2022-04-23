@@ -30,8 +30,9 @@ In this project, we used Statsbomb event data from the [Dato-Futbol/passing-netw
 
 ### Background 
 
-2. Sufficient background to make the significance of your question legible for non-expert readers:
-Soccer background, motivation for question and why our question/hypotheses are significant (Dieter?)
+The most popular sport in the world brings forth a complexity when looking beyond the score and using methods, metrics, and visualization to analyse a game. There are many events that occur in one soccer match such as shots, goals, passes, fouls, among many others. There are multitude amounts of statistics that are be used to analyse a player, a position, or a whole team. There a variety of competitions national teams can participate in. The World Cup, played ever 4 years, is the biggest stage to play for any soccer player and national team. We choose to analyze the current reigning champions of the world, France, and their trajectory through the semi-final game and final game as well as their opponents in these games. There has been a total of 21 World cups France has qualified 15 times to the competition. France has made it to the semifinals or further in 6 occasions and winning it twice. Currently they are considered one of the best teams, being ranked 3rd in the FIFA men's ranking. 
+
+In many soccer games a man of the match is selected and it usually goes to a player that effectively contributed the most in the game. The contribution of the player can range from scoring a decisive goal to a goalkeeper keeping a clean sheet after many chances from the counter-part. Using this idea of MOTM, we want to explore the team and it's player's significance in the game based on their number of passes. Passing networks are an example to mathematically and visually analyze what happens in the pitch and how players interact with each other throughout the game. Many times key players are not the ones who score the goals, but the ones that allow for the creation of scoring chances. This project studies individual player's passing contributions to further understand a team's dynamic and the players themselves. We do not take into account current position of a player at the moment of the pass or it’s difficulty, but rather it’s overall presence with the ball and with it's teammates. 
 
 ### Methodology and Discussion 
 
@@ -409,12 +410,16 @@ semi_belgium_image <- image_composite(image_scale(soccer_field_belgium_semi, "x1
 plot(semi_france_image)
 ```
 
+The above plot is a directed network showing the passes  from and to each player. We can observe that a great concentration of edges between Pavard, Mbappe, Pogba, and Varane. These players represent the right side of the french lineup and are considered a lot more attacking that its left side. The attacks coming from this side is not surprising because in the the right side, Pavard is a very offensive defensive player that participates in sending crosses or connecting with strikers. This is shown with by amount of passes with Mbappe and Pogba. In comparison, french’s left side consisting of defender Hernandez and Umtiti have a much lower connection with the forwards. They mostly pass with each other or the center midfielders. The lack of connection between Varane , Pavard and Umtiti Hernandez shows that during this game the defenders did not swing the ball much in the back. This can due to the fact that the Belgian team was attacking and pressing quite bit. 
+
 ##### Belgium in the 2018 World Cup Semifinal 
 
 ```{r plot-belgium-semi-field-network, warning = FALSE}
 # plot the belgium passing network from the World Cup semifinal on soccer field
 plot(semi_belgium_image)
 ```
+
+The directed passing network above represents the Belgium’s passing from and to each player. Belgium had a significantly greater amount of possession than France. This can be seen with the passing among their defenders and midfield. However, they lacked an attacking component having fewer shots than France and its reflected with the lack of passing to the forwards. Additionally, De Bruyne is has an important presence in the attacking, but this game the passes he completed did not go as forward as the usual. He was restrained to passing through the middle. This can possibly be granted to the French emphasis on shutting him down quickly and forcing him to play back.
 
 ##### France in the 2018 World Cup Final 
 
@@ -423,6 +428,9 @@ plot(semi_belgium_image)
 plot(final_france_image)
 ```
 
+The plot above represents Frances passing network in the world cup final. Similar to the semifinal Varane, Pavard, Mbape, and Pogba have significant amount of connections. Additionally, Kante also has a lot of connections with everyone. This shows how France continues to attack to from the right side of the field. Though during this game the left side defenders, midfields and forwards have a greater number of connections between. It seems like they increase their attack through the left side which corresponding to 4 goals, compared to only one in the semifinal. 
+
+
 ##### Croatia in the 2018 World Cup Final 
 
 ```{r plot-croatia-final-field-network, warning = FALSE}
@@ -430,10 +438,11 @@ plot(final_france_image)
 plot(final_croatia_image)
 ```
 
- (include interpretation)
-
+The directed passing network above represents Croatia’s passing from and to each player. Croatia had a significant amount of possession  during the game and this can be seen in the network with he defenders and midfielders having significant connections with each other. However, when it came to moving the ball forward the number of connections drops. The lack of passes to the forward can be attributed to the French defensive style. They allow for the other team to have possession in their own half, but Croatia crossed to the French side they would  press and prevent passes getting to their forwards. Modric seems to have the most diverse connections which makes sense since he usually controls the midfield for the Croatian team.
 
 #### Betweenness Centrality and Closeness Centrality Statistics for Teams in the 2018 World Cup Semifinal and Final
+
+The importance of  a player to a team is hard to define. Every player plays a crucial role on the team; the success of the team depends on the individual contributions of each player. Although the performance of the team depends on every player, some players are more influential and contribute more than other players. The influence of players on the teams’ accomplishments depends on different factors. For instance,  the position they play will have an impact on how much they interact with other players and the ball, thus, determining their influence during the game. 
 
 From [UNGAR Chapter 7: Actor Prominence](https://link.springer.com/book/10.1007/978-3-319-23883-8), we will use measures of centrality to determine the prominence of players on the teams in the 2018 World Cup semifinal and final. We will use closeness centrality which measures how close a given node is to other nodes in the network as well as betweenness centrality which measures to what extent a given node is positioned "between" pairs of other nodes in the network.
 
@@ -535,6 +544,8 @@ closeness.croatia_final[ind][1:13] # displaying table of croatia final closeness
 From our closeness centrality calculation, we see that Modrić, Brozović, and Rakitić have the largest closeness centrality scores among Croatian players in the final with scores of 0.077, 0.077, and 0.071 respectively. Since closeness centrality is calculated out of 1, these are still very small scores that measure how well-connected a player is based on how easy it is for other players to reach them. These top three players are midfielders for Croatia.
 
 From these two calculations of centrality, midfielder Luka Modrić is the most central to the passing network of the Croatian team in the 2018 World Cup final, followed closely by other key players including midfielder Rakitić and defender Lovren.
+
+Midfielders are constantly interacting with the ball; they are the connections between the defenders and the forward players. They dictate how much the team is moving back and forth on the field. Although defenders don’t interact with the ball as much as the midfielders do, they have sufficient interactions with the ball that it would show. Their job is to stop attacks from the opposing team and prevent the opposing team from scoring a goal. Ultimately, it suffices to conclude that some of the most valuable players to a team will be players who interact the most with the ball and well as other players. In this case, the midfielders and defenders are invaluable to the three teams that played in the 2018 Word Cup semifinal and final. 
 
 #### Modeling Sent and Received Passing Distributions for Teams in the 2018 World Cup Final and Semifinal
 
